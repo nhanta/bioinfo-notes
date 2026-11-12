@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Embedding cho dữ liệu omics</title>
-<meta name="description" content="Embedding là gì, nằm ở đâu trong mô hình, các họ phương pháp chính, và cách embedding cho end-motif cfDNA, read count NIPT, genotype SNP, biểu hiện gene đơn bào, có mô phỏng và số liệu chạy lại từ EMIT.">
+<meta name="description" content="Embedding là gì, nằm ở đâu trong mô hình, bốn tầng lựa chọn khi xây embedding, và cách embedding cho end-motif cfDNA, read count NIPT, genotype SNP, biểu hiện gene đơn bào, có mô phỏng và số liệu chạy lại từ EMIT.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Embedding cho dữ liệu omics">
-<meta property="og:description" content="Embedding là gì, nằm ở đâu trong mô hình, các họ phương pháp chính, và cách embedding cho end-motif cfDNA, read count NIPT, genotype SNP, biểu hiện gene đơn bào, có mô phỏng và số liệu chạy lại từ EMIT.">
+<meta property="og:description" content="Embedding là gì, nằm ở đâu trong mô hình, bốn tầng lựa chọn khi xây embedding, và cách embedding cho end-motif cfDNA, read count NIPT, genotype SNP, biểu hiện gene đơn bào, có mô phỏng và số liệu chạy lại từ EMIT.">
 <meta property="og:url" content="https://nhanta.github.io/bioinfo-notes/embedding/">
 <meta property="og:image" content="https://nhanta.github.io/bioinfo-notes/embedding/cover.png?v=3">
 <meta property="og:image:width" content="1200">
@@ -193,14 +193,14 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <header class="hero">
   <div class="eyebrow">Ghi chú tin sinh học · Bài 1 · Phương pháp</div>
   <h1>Embedding cho dữ liệu <em>omics</em></h1>
-  <p class="lede col" style="max-width:780px;margin:0">Một mô hình học sâu không đọc được chuỗi "CCCA", con số "3 bản sao" hay genotype "0/1". Nó chỉ nhận vector số thực. Embedding là bước đổi các đối tượng sinh học đó thành vector, và cách đổi quyết định mô hình nhìn thấy gì trong dữ liệu. Bài này đi qua định nghĩa, vị trí của embedding trong mô hình, các họ phương pháp chính, rồi áp dụng cho bốn loại dữ liệu cụ thể là end-motif cfDNA, read count NIPT, genotype SNP và biểu hiện gene đơn bào.</p>
+  <p class="lede col" style="max-width:780px;margin:0">Một mô hình học sâu không đọc được chuỗi "CCCA", con số "3 bản sao" hay genotype "0/1". Nó chỉ nhận vector số thực. Embedding là bước đổi các đối tượng sinh học đó thành vector, và cách đổi quyết định mô hình nhìn thấy gì trong dữ liệu. Bài này đi qua định nghĩa, vị trí của embedding trong mô hình, bốn tầng lựa chọn khi xây một embedding, rồi áp dụng cho bốn loại dữ liệu cụ thể là end-motif cfDNA, read count NIPT, genotype SNP và biểu hiện gene đơn bào.</p>
   <figure class="hero-fig" style="margin:0" aria-label="Từ đoạn cfDNA đến vector embedding">
     <p class="swipe">Vuốt ngang để xem đủ bốn bước của hình.</p>
     <svg id="heroSvg" viewBox="0 0 1000 228" role="img"></svg>
     <figcaption><b>Hình mở đầu.</b> Bốn bước EMIT dùng để đổi cfDNA thành dữ liệu mô hình đọc được, đọc theo các số trên hình. <b>(1)</b> Mỗi đoạn cfDNA trong huyết tương dài khoảng 167 bp. EMIT chỉ lấy 4 nucleotide ở đầu 5′ của đoạn, gọi là end-motif, ở đây là CCCA. <b>(2)</b> Có 4<sup>4</sup> = 256 end-motif khả dĩ, mỗi motif được gán một số nguyên gọi là token id. CCCA có token id 89. <b>(3)</b> Mô hình giữ một bảng \(W_x\) gồm 261 hàng, mỗi hàng là một vector 384 chiều được học trong lúc huấn luyện. Embedding của CCCA chính là hàng 89 của bảng này. Dải cột bên phải vẽ 32 trong 384 giá trị thật của hàng đó, cột hướng lên là giá trị dương, cột hướng xuống là giá trị âm. <b>(4)</b> Mỗi lần, EMIT lấy ngẫu nhiên 10 triệu read của một mẫu, đếm số lần mỗi motif xuất hiện, giữ 128 motif phổ biến nhất theo thứ tự giảm dần, rồi thêm hai token đánh dấu [CLS] ở đầu và [SEP] ở cuối. Chuỗi 130 token này là đầu vào của mô hình, và mỗi token trong chuỗi đều đi qua bước (2) và (3). Ví dụ lấy từ chuỗi đầu tiên trong dữ liệu tiền huấn luyện công khai của EMIT. Từng bước được giải thích kỹ ở <a href="#s1">§1</a> và <a href="#s3">§3.1</a>, nên bạn chưa cần hiểu hết hình này trước khi đọc tiếp.</figcaption>
   </figure>
   <nav class="toc" aria-label="Mục lục">
-    <a href="#s1">1. Embedding là gì</a><a href="#s2">2. Các họ phương pháp</a><a href="#s3">3. Theo từng loại dữ liệu</a><a href="#s4">4. Bảng chọn nhanh</a><a href="#s5">5. Học phần nền</a><a href="#refs">Tài liệu</a>
+    <a href="#s1">1. Embedding là gì</a><a href="#s2">2. Bốn tầng lựa chọn</a><a href="#s3">3. Theo từng loại dữ liệu</a><a href="#s4">4. Bảng chọn nhanh</a><a href="#s5">5. Học phần nền</a><a href="#refs">Tài liệu</a>
   </nav>
   <p class="small muted" style="margin:0">Các hình gắn nhãn <span class="tag real">dữ liệu thật</span> được tính trực tiếp từ checkpoint và dữ liệu công bố của EMIT. Các mô phỏng gắn nhãn <span class="tag ill">số minh họa</span> dùng tham số tự đặt để thể hiện cơ chế, không phải kết quả đo.</p>
 </header>
@@ -274,7 +274,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
         </div>
       </div>
     </div>
-    <figcaption><b>Hình 1.</b> Bên phải là PCA của 256 hàng motif trong \(W_x\) của checkpoint EMIT công khai. PC1 và PC2 chỉ giải thích <span id="pcv"></span> phương sai, nên hình hai chiều này chỉ là một lát cắt của không gian 384 chiều. Hệ số tương quan Pearson giữa PC1 và số dinucleotide CpG trong motif là 0,80. Mô hình không được cung cấp khái niệm CpG; cấu trúc này hình thành từ dữ liệu tiền huấn luyện, trong đó có giải trình tự bisulfite và 5hmC, vốn mang tín hiệu methyl hóa tại CpG. Bấm vào một điểm để chọn motif.</figcaption>
+    <figcaption><b>Hình 1.</b> Bên phải là PCA của 256 hàng motif trong \(W_x\) của checkpoint EMIT công khai. PC1 và PC2 chỉ giải thích <span id="pcv"></span> phương sai, nên hình hai chiều này chỉ là một lát cắt của không gian 384 chiều. Hệ số tương quan Pearson giữa PC1 và số dinucleotide CpG trong motif là 0,80. Mô hình không được cung cấp khái niệm CpG. Một cách giải thích hợp lý, nhưng chưa được kiểm chứng riêng, là dữ liệu tiền huấn luyện có giải trình tự bisulfite và 5hmC, vốn mang tín hiệu methyl hóa tại CpG. Bấm vào một điểm để chọn motif.</figcaption>
   </figure>
 </section>
 
@@ -319,9 +319,9 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col">
   <div class="eq"><span class="lbl">Phương trình 2 · đầu vào encoder</span>
   \[ \mathbf{h}^{(0)}_t \;=\; \mathrm{LayerNorm}\big(W_x[m_t] + W_p[t] + W_s[0]\big),\qquad t = 0,\dots,129 \]
-  <span class="small muted">\(W_x\) là embedding token, \(W_p \in \mathbb{R}^{512\times 384}\) là embedding vị trí học được (EMIT chỉ dùng 130 hàng đầu), \(W_s\) là embedding loại đoạn (segment) của BERT, ở đây luôn bằng 0.</span>
+  <span class="small muted">\(W_x\) là embedding token, \(W_p \in \mathbb{R}^{512\times 384}\) là embedding vị trí học được (EMIT chỉ dùng 130 hàng đầu), \(W_s\) là embedding loại đoạn (segment) của BERT. EMIT chỉ có một loại đoạn, nên chỉ số luôn là 0 và mọi vị trí cộng cùng một vector học được \(W_s[0]\).</span>
   </div>
-  <p>Transformer không phân biệt thứ tự token nếu không có \(W_p\), vì self-attention là phép toán bất biến với hoán vị. Bản gốc của Vaswani và cộng sự (2017) dùng mã vị trí hình sin cố định, còn BERT và EMIT học \(W_p\) như một bảng tham số.</p>
+  <p>Transformer không phân biệt thứ tự token nếu không có \(W_p\), vì self-attention đẳng biến với hoán vị. Đổi chỗ hai token ở đầu vào thì hai vector đầu ra cũng chỉ đổi chỗ, giá trị không đổi. Bản gốc của Vaswani và cộng sự (2017) dùng mã vị trí hình sin cố định, còn BERT và EMIT học \(W_p\) như một bảng tham số.</p>
   <div class="eq"><span class="lbl">Phương trình 3 · mã vị trí hình sin (Vaswani và cộng sự, 2017)</span>
   \[ \mathrm{PE}(t, 2j) = \sin\!\Big(\frac{t}{10000^{2j/d}}\Big),\qquad \mathrm{PE}(t, 2j+1) = \cos\!\Big(\frac{t}{10000^{2j/d}}\Big) \]
   </div>
@@ -353,7 +353,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
         <tr><td>Đọc lại vị trí bằng một phép chiếu tuyến tính</td><td>32.768 / 32.768</td></tr>
         <tr><td>Trung bình |cos| giữa hàng \(W_x\) và hàng \(W_p\)</td><td>0,029, thấp hơn mức của hai vector ngẫu nhiên (0,041)</td></tr>
       </tbody></table></div>
-      <p>\(W_x\) và \(W_p\) nằm theo các hướng gần như vuông góc, nên khi cộng chúng không lấn nhau. Về đại số, cộng hai embedding bằng ghép hai mã one-hot rồi cho qua một lớp tuyến tính, \( W_x[\text{id}] + W_p[t] = [\,W_x;\,W_p\,]^{\top}[\,\mathbf e_{\text{id}};\,\mathbf u_t\,] \). Ghép nối hai embedding thay vì cộng sẽ cho vector 768 chiều và mọi lớp phía sau phải lớn gấp đôi.</p>
+      <p>\(W_x\) và \(W_p\) nằm theo các hướng gần như vuông góc, nên khi cộng chúng không lấn nhau. Về đại số, cộng hai embedding bằng ghép hai mã one-hot rồi cho qua một lớp tuyến tính, \( W_x[\text{id}] + W_p[t] = [\,W_x;\,W_p\,]^{\top}[\,\mathbf e_{\text{id}};\,\mathbf u_t\,] \). Ghép nối hai embedding thay vì cộng sẽ cho vector 768 chiều, và cần thêm một phép chiếu về 384 chiều hoặc một encoder rộng hơn.</p>
     </div></details>
   </div>
 </section>
@@ -374,55 +374,127 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
   \[ \mathcal{L}_{\mathrm{MLM}}(\theta) \;=\; -\,\mathbb{E}_{M}\sum_{t\in\mathcal{M}} \log p_\theta\big(m_t \,\big|\, \tilde{M}\big),\qquad p_\theta(\cdot\mid\tilde M) = \mathrm{softmax}\big(g(\mathbf{z}_t)\,W_x^{\top} + \mathbf{b}\big) \]
   <span class="small muted">\(\mathcal{M}\) là tập vị trí bị che, \(\tilde M\) là chuỗi sau khi che, \(\mathbf z_t\) là vector ở lớp cuối tại vị trí \(t\), và \(g(\mathbf z) = \mathrm{LN}\big(\mathrm{GELU}(\mathbf z W_g + \mathbf b_g)\big)\) với \(W_g \in \mathbb{R}^{384\times 384}\). Ma trận đầu ra chính là \(W_x\) (weight tying). Trong checkpoint EMIT, trọng số đầu ra của head MLM trùng hoàn toàn với bảng embedding, nên gradient từ đầu ra cũng cập nhật trực tiếp \(W_x\).</span>
   </div>
-  <p>Để dự đoán đúng một motif bị che ở hạng 40, mô hình phải biết những motif nào thường cùng xuất hiện quanh hạng 40 trong cùng loại mẫu. Hai motif có phân bố hạng giống nhau qua hàng nghìn mẫu sẽ nhận gradient giống nhau và có vector gần nhau. Đây là cơ chế tạo ra cụm CpG trong Hình 1.</p>
+  <p>Để dự đoán đúng một motif bị che ở hạng 40, mô hình phải biết những motif nào thường cùng xuất hiện quanh hạng 40 trong cùng loại mẫu. Hai motif có phân bố hạng giống nhau qua hàng nghìn mẫu sẽ nhận gradient giống nhau và có xu hướng có vector gần nhau. Đây là một cách giải thích cho cụm CpG trong Hình 1.</p>
 </section>
 
 <!-- =========================== 2 =========================== -->
 <section class="col" id="s2">
   <span class="secno">§2</span>
-  <h2>Các họ phương pháp embedding</h2>
-  <p>Có thể phân loại các phương pháp theo hai câu hỏi. Thứ nhất, vector được tính bằng công thức cố định hay được học từ dữ liệu. Thứ hai, vector của một đối tượng có thay đổi theo ngữ cảnh hay không. Chín họ phương pháp dưới đây đi từ cố định đến học được, từ không ngữ cảnh đến có ngữ cảnh.</p>
+  <h2>Bốn tầng lựa chọn khi xây embedding</h2>
+  <p>Các tên quen thuộc như phổ k-mer, PCA, VAE, transformer hay học tương phản không phải là các phương pháp cùng loại để chọn một trong số đó. Chúng trả lời những câu hỏi khác nhau. Một mô hình embedding cụ thể là tổ hợp của ba lựa chọn. <b>Tầng 1</b> quyết định dữ liệu thô được đưa vào dưới dạng nào. <b>Tầng 2</b> là kiến trúc, tức hàm biến đầu vào thành vector. <b>Tầng 3</b> là mục tiêu huấn luyện, tức tín hiệu dùng để học tham số của hàm đó. <b>Tầng 4</b> tách riêng các phương pháp chỉ dùng để vẽ hình, vì tọa độ của chúng không nên đưa vào mô hình phía sau.</p>
+  <p>Ví dụ EMIT. Tầng 1 là token end-motif xếp theo hạng tần suất. Tầng 2 là bảng tra cộng embedding vị trí rồi qua một lớp transformer. Tầng 3 là masked language modeling (Phương trình 4). Sau khi tiền huấn luyện, vector [CLS] được dùng cho một bộ phân loại tuyến tính học có giám sát. Bảng 1 ở cuối mục phân tích thêm tám mô hình theo cùng cách.</p>
 </section>
 
+<section class="col">
+  <h3>Tầng 1 · Biểu diễn đầu vào</h3>
+  <p>Dữ liệu thô được đổi thành số đếm, token rời rạc hoặc giá trị liên tục. Lựa chọn này quyết định thông tin nào còn lại trước khi mô hình bắt đầu học.</p>
+</section>
 <section class="wide">
   <div class="methods">
-    <div class="mcard"><span class="kind">cố định · không ngữ cảnh</span><h4>One-hot và phổ k-mer</h4>
-      <p>Mỗi chuỗi được biểu diễn bằng số lần xuất hiện của từng k-mer. Không có tham số, dễ giải thích, nhưng số chiều tăng theo \(4^k\) và mọi cặp k-mer khác nhau đều trực giao.</p>
+    <div class="mcard"><span class="kind">tầng 1 · đầu vào · không tham số</span><h4>One-hot và phổ k-mer</h4>
+      <p>One-hot đổi mỗi nucleotide thành một vector 4 phần tử, nên chuỗi dài \(L\) thành ma trận \(L \times 4\) giữ nguyên vị trí, là đầu vào quen thuộc của mạng tích chập trên DNA. Phổ k-mer bỏ vị trí và chỉ giữ số lần xuất hiện của từng k-mer. Cả hai không có tham số, dễ giải thích, nhưng số chiều tăng theo \(4^k\) và mọi cặp k-mer khác nhau đều trực giao. Vector đếm này có thể dùng trực tiếp, hoặc làm đầu vào cho PCA hay một mạng ở tầng 2.</p>
       <div class="f">\( \phi_k(s)_u = \#\{\,i : s_{i..i+k-1} = u\,\},\quad u\in\{A,C,G,T\}^k \)</div>
       <div class="ex">Baseline của EMIT là vector đếm 256 end-motif 4-mer. Với \(k = 6\) có 4.096 chiều, \(k = 8\) có 65.536 chiều. Bài tập <i>Vector đếm k-mer</i>, <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a> Chương 37.</div></div>
-    <div class="mcard"><span class="kind">cố định theo dữ liệu · tuyến tính</span><h4>PCA và SVD</h4>
-      <p>Chiếu dữ liệu đã trừ trung bình lên \(k\) hướng có phương sai lớn nhất. Giữ được khoảng cách Euclid tốt nhất trong mọi phép chiếu tuyến tính hạng \(k\).</p>
-      <div class="f">\( \mathbf{z} = V_k^{\top}(\mathbf{x}-\boldsymbol\mu),\quad X-\mathbf 1\boldsymbol\mu^\top = U\Sigma V^{\top} \)</div>
-      <div class="ex">Scanpy giữ 50 PC trước khi dựng đồ thị kNN cho scRNA-seq. Trong GWAS, các PC của ma trận genotype được đưa vào làm hiệp biến cấu trúc quần thể (Price và cộng sự, 2006).</div></div>
-    <div class="mcard"><span class="kind">tối ưu theo mẫu · phi tuyến</span><h4>t-SNE và UMAP</h4>
-      <p>Đặt các điểm trong 2 hoặc 3 chiều sao cho quan hệ láng giềng gần được giữ lại. Khoảng cách giữa các cụm và kích thước cụm trên hình không mang ý nghĩa định lượng, nên không dùng tọa độ này làm đầu vào cho bộ phân loại.</p>
-      <div class="f">\( \min_{Y}\; \mathrm{KL}(P\,\|\,Q) = \sum_{i\neq j} p_{ij}\log\frac{p_{ij}}{q_{ij}} \)</div>
-      <div class="ex">Hàm mục tiêu của t-SNE (van der Maaten và Hinton, 2008). UMAP (McInnes và cộng sự, 2018) dùng cross-entropy trên đồ thị láng giềng mờ.</div></div>
-    <div class="mcard"><span class="kind">học được · không ngữ cảnh</span><h4>Dự đoán ngữ cảnh (word2vec)</h4>
-      <p>Mỗi token có một vector cố định, học bằng cách dự đoán token lân cận. Negative sampling thay softmax trên toàn từ điển bằng \(K\) mẫu nhiễu.</p>
-      <div class="f">\( \log\sigma(\mathbf u_c^{\top}\mathbf v_w) + \sum_{n=1}^{K}\mathbb E_{u_n\sim P_n}\log\sigma(-\mathbf u_n^{\top}\mathbf v_w) \)</div>
-      <div class="ex">Mikolov và cộng sự (2013). Trong sinh học có dna2vec cho k-mer (Ng, 2017) và Gene2vec cho gene đồng biểu hiện.</div></div>
-    <div class="mcard"><span class="kind">học được · mô hình sinh</span><h4>Autoencoder và VAE</h4>
-      <p>Encoder nén mẫu thành \(\mathbf z\), decoder dựng lại mẫu từ \(\mathbf z\). VAE thêm phân phối tiên nghiệm để không gian ẩn liên tục và lấy mẫu được.</p>
-      <div class="f">\( \mathcal L = \mathbb E_{q_\phi(\mathbf z|\mathbf x)}\big[\log p_\theta(\mathbf x|\mathbf z)\big] - \mathrm{KL}\big(q_\phi(\mathbf z|\mathbf x)\,\|\,p(\mathbf z)\big) \)</div>
-      <div class="ex">scVI (Lopez và cộng sự, 2018) dùng likelihood negative binomial cho count scRNA-seq và đưa batch vào decoder.</div></div>
-    <div class="mcard"><span class="kind">học được · có ngữ cảnh</span><h4>Transformer: token + vị trí</h4>
-      <p>Bảng tra cho token cộng embedding vị trí (Phương trình 2), sau đó self-attention trộn thông tin giữa các token. Vector đầu ra của cùng một token thay đổi theo mẫu.</p>
-      <div class="f">\( \mathrm{Attn}(Q,K,V)=\mathrm{softmax}\!\big(QK^{\top}/\sqrt{d_h}\big)V \)</div>
-      <div class="ex">DNABERT dùng k-mer chồng lấp (Ji và cộng sự, 2021). Geneformer dùng gene sắp theo hạng biểu hiện (Theodoris và cộng sự, 2023). EMIT dùng end-motif sắp theo hạng tần suất.</div></div>
-    <div class="mcard"><span class="kind">học được · tương phản</span><h4>Học tương phản (InfoNCE)</h4>
-      <p>Kéo hai góc nhìn của cùng một mẫu lại gần, đẩy các mẫu khác ra xa. Nhiệt độ \(\tau\) điều chỉnh mức phạt với các mẫu âm khó. Mô phỏng 2 bên dưới chạy hàm này.</p>
-      <div class="f">\( \mathcal L_i = -\log\dfrac{\exp(\mathbf z_i^{\top}\mathbf z_{i^+}/\tau)}{\sum_{a\neq i}\exp(\mathbf z_i^{\top}\mathbf z_a/\tau)} \)</div>
-      <div class="ex">van den Oord và cộng sự (2018). CLOOME ghép ảnh Cell Painting với cấu trúc phân tử theo cách này.</div></div>
-    <div class="mcard"><span class="kind">học được · cấu trúc đồ thị</span><h4>Embedding trên đồ thị</h4>
-      <p>Vector của một nút được cập nhật từ vector của các nút kề. Phù hợp khi tri thức có sẵn ở dạng mạng (GO, tương tác protein, pathway).</p>
-      <div class="f">\( \mathbf h_v^{(\ell+1)} = \sigma\Big(W^{(\ell)}\sum_{u\in\mathcal N(v)\cup\{v\}}\tfrac{\mathbf h_u^{(\ell)}}{\sqrt{|\mathcal N(u)||\mathcal N(v)|}}\Big) \)</div>
-      <div class="ex">GEARS (Roohani và cộng sự, 2023) lan truyền embedding nhiễu loạn trên đồ thị đồng chú thích GO, nhờ đó dự đoán được gene chưa từng bị knock-down trong tập train.</div></div>
-    <div class="mcard"><span class="kind">giá trị liên tục</span><h4>Embedding cho giá trị số</h4>
+    <div class="mcard"><span class="kind">tầng 1 · đầu vào · token rời rạc</span><h4>Token hóa</h4>
+      <p>Chia dữ liệu thành các đơn vị rời rạc, mỗi đơn vị một số nguyên trong từ điển. Cách chia và thứ tự các token là một phần của thiết kế, vì thứ tự có thể mang thông tin như hạng tần suất hay hạng biểu hiện.</p>
+      <div class="f">\( s \;\mapsto\; (i_0, i_1, \dots, i_{n-1}),\quad i_t \in \{0, \dots, |V|-1\} \)</div>
+      <div class="ex">DNABERT chia chuỗi DNA thành k-mer chồng lấp. EMIT dùng end-motif xếp theo hạng tần suất. Geneformer dùng tên gene xếp theo hạng biểu hiện đã chuẩn hóa.</div></div>
+    <div class="mcard"><span class="kind">tầng 1 · đầu vào · giá trị liên tục</span><h4>Mã hóa giá trị số</h4>
       <p>Read count, mức biểu hiện, dosage là số thực, không phải token. Có ba cách thường dùng là chiếu tuyến tính, chia bin rồi tra bảng, hoặc đặc trưng Fourier.</p>
       <div class="f">\( \mathbf w x + \mathbf b,\quad W_{\text{bin}}[\,\mathrm{bin}(x)\,],\quad \gamma(x) = [\sin 2\pi B x,\ \cos 2\pi B x] \)</div>
       <div class="ex">scGPT chia biểu hiện của mỗi tế bào thành bin theo phân vị (Cui và cộng sự, 2024). Đặc trưng Fourier theo Tancik và cộng sự (2020).</div></div>
   </div>
+</section>
+
+<section class="col">
+  <h3>Tầng 2 · Kiến trúc tạo vector</h3>
+  <p>Hàm \(f_\theta\) đưa đầu vào của tầng 1 về vector \(\mathbf z\). Cùng một kiến trúc có thể được huấn luyện bằng nhiều mục tiêu khác nhau ở tầng 3.</p>
+</section>
+<section class="wide">
+  <div class="methods">
+    <div class="mcard"><span class="kind">tầng 2 · kiến trúc · không ngữ cảnh</span><h4>Bảng tra</h4>
+      <p>Mỗi token có một hàng riêng trong ma trận tham số (Phương trình 1). Vector của một token không phụ thuộc các token xung quanh. Đây là lớp đầu tiên của mọi mô hình nhận token.</p>
+      <div class="f">\( \mathbf x = W^{\top}\mathbf e_i = W[i,:],\quad W \in \mathbb R^{|V|\times d} \)</div>
+      <div class="ex">\(W_x\) của EMIT cỡ 261 × 384. word2vec và dna2vec chỉ gồm hai bảng tra, một cho vector của token và một cho vector ngữ cảnh, không có lớp ẩn phi tuyến. Toàn bộ việc học nằm ở mục tiêu tầng 3.</div></div>
+    <div class="mcard"><span class="kind">tầng 2 · kiến trúc · tuyến tính</span><h4>Phép chiếu tuyến tính (PCA, SVD)</h4>
+      <p>Chiếu dữ liệu đã trừ trung bình lên \(k\) hướng có phương sai lớn nhất. Trong mọi phép chiếu trực giao xuống \(k\) chiều, PCA giữ lại nhiều phương sai nhất, tương đương sai số tái tạo bình phương nhỏ nhất. Tham số tính bằng phân rã ma trận, không cần gradient.</p>
+      <div class="f">\( \mathbf{z} = V_k^{\top}(\mathbf{x}-\boldsymbol\mu),\quad X-\mathbf 1\boldsymbol\mu^\top = U\Sigma V^{\top} \)</div>
+      <div class="ex">Scanpy giữ 50 PC trước khi dựng đồ thị kNN cho scRNA-seq. Trong GWAS, các PC của ma trận genotype được đưa vào làm hiệp biến cấu trúc quần thể (Price và cộng sự, 2006).</div></div>
+    <div class="mcard"><span class="kind">tầng 2 · kiến trúc · phi tuyến</span><h4>Encoder của autoencoder</h4>
+      <p>Mạng nhiều lớp nén vector đầu vào thành \(\mathbf z\) ít chiều hơn. Encoder đi cùng một decoder dựng lại đầu vào, và cặp này thường được huấn luyện bằng mục tiêu tái tạo ở tầng 3.</p>
+      <div class="f">\( \mathbf z = f_\phi(\mathbf x),\quad \hat{\mathbf x} = g_\theta(\mathbf z) \)</div>
+      <div class="ex">scVI dùng encoder nhiều lớp trên count scRNA-seq, decoder nhận thêm biến batch (Lopez và cộng sự, 2018).</div></div>
+    <div class="mcard"><span class="kind">tầng 2 · kiến trúc · có ngữ cảnh</span><h4>Transformer</h4>
+      <p>Bảng tra cho token cộng embedding vị trí (Phương trình 2), sau đó self-attention trộn thông tin giữa các token. Vector đầu ra của cùng một token thay đổi theo mẫu.</p>
+      <div class="f">\( \mathrm{Attn}(Q,K,V)=\mathrm{softmax}\!\big(QK^{\top}/\sqrt{d_h}\big)V \)</div>
+      <div class="ex">DNABERT (Ji và cộng sự, 2021), Geneformer (Theodoris và cộng sự, 2023), scGPT và EMIT đều dùng kiến trúc này. Chúng khác nhau chủ yếu ở tầng 1, và scGPT khác thêm ở tầng 3.</div></div>
+    <div class="mcard"><span class="kind">tầng 2 · kiến trúc · đồ thị</span><h4>Mạng nơ-ron đồ thị (GNN)</h4>
+      <p>Vector của một nút được cập nhật từ vector của các nút kề. Phù hợp khi tri thức có sẵn ở dạng mạng (GO, tương tác protein, pathway).</p>
+      <div class="f">\( \mathbf h_v^{(\ell+1)} = \sigma\Big(W^{(\ell)}\sum_{u\in\mathcal N(v)\cup\{v\}}\tfrac{\mathbf h_u^{(\ell)}}{\sqrt{|\mathcal N(u)||\mathcal N(v)|}}\Big) \)</div>
+      <div class="ex">GEARS (Roohani và cộng sự, 2024) dùng hai đồ thị. Embedding của nhiễu loạn được lan truyền trên đồ thị đồng chú thích GO, embedding gene trên đồ thị đồng biểu hiện, nhờ đó dự đoán được gene chưa từng bị knock-down trong tập train.</div></div>
+  </div>
+</section>
+
+<section class="col">
+  <h3>Tầng 3 · Mục tiêu huấn luyện</h3>
+  <p>Hàm mất mát quyết định embedding giữ lại thông tin gì. Cùng một transformer, học bằng dự đoán token bị che sẽ cho không gian vector khác với học bằng tương phản.</p>
+</section>
+<section class="wide">
+  <div class="methods">
+    <div class="mcard"><span class="kind">tầng 3 · mục tiêu · không nhãn</span><h4>Tái tạo đầu vào</h4>
+      <p>Học sao cho dựng lại được đầu vào từ \(\mathbf z\). VAE thêm phân phối tiên nghiệm để không gian ẩn liên tục và lấy mẫu được. Khi cả encoder và decoder đều tuyến tính và sai số là bình phương, nghiệm tối ưu nằm trên đúng không gian con của PCA. Công thức dưới là cận dưới ELBO của VAE, cần cực đại hóa.</p>
+      <div class="f">\( \mathcal L = \mathbb E_{q_\phi(\mathbf z|\mathbf x)}\big[\log p_\theta(\mathbf x|\mathbf z)\big] - \mathrm{KL}\big(q_\phi(\mathbf z|\mathbf x)\,\|\,p(\mathbf z)\big) \)</div>
+      <div class="ex">scVI tối đa hóa cận dưới này với likelihood negative binomial cho count scRNA-seq.</div></div>
+    <div class="mcard"><span class="kind">tầng 3 · mục tiêu · không nhãn</span><h4>Dự đoán ngữ cảnh hoặc phần bị che</h4>
+      <p>Học bằng cách đoán token lân cận (word2vec) hoặc token bị che trong chuỗi (MLM, Phương trình 4). Negative sampling thay softmax trên toàn từ điển bằng \(K\) mẫu nhiễu.</p>
+      <div class="f">\( \log\sigma(\mathbf u_c^{\top}\mathbf v_w) + \sum_{n=1}^{K}\mathbb E_{u_n\sim P_n}\log\sigma(-\mathbf u_n^{\top}\mathbf v_w) \)</div>
+      <div class="ex">Công thức word2vec của Mikolov và cộng sự (2013), dùng cho dna2vec (Ng, 2017) và Gene2vec. EMIT, DNABERT và Geneformer dùng MLM.</div></div>
+    <div class="mcard"><span class="kind">tầng 3 · mục tiêu · cặp dương và âm</span><h4>Học tương phản (InfoNCE)</h4>
+      <p>Kéo hai góc nhìn của cùng một mẫu lại gần, đẩy các mẫu khác ra xa. Nhiệt độ \(\tau\) điều chỉnh mức phạt với các mẫu âm khó. Mô phỏng 2 bên dưới chạy hàm này.</p>
+      <div class="f">\( \mathcal L_i = -\log\dfrac{\exp(\mathbf z_i^{\top}\mathbf z_{i^+}/\tau)}{\sum_{a\neq i}\exp(\mathbf z_i^{\top}\mathbf z_a/\tau)} \)</div>
+      <div class="ex">van den Oord và cộng sự (2018). CLOOME ghép ảnh Cell Painting với cấu trúc phân tử bằng InfoLOOB, một biến thể của hàm này.</div></div>
+    <div class="mcard"><span class="kind">tầng 3 · mục tiêu · có nhãn</span><h4>Học có giám sát</h4>
+      <p>Embedding được học, hoặc tinh chỉnh, để dự đoán một nhãn hay một giá trị đo. Thường dùng sau tiền huấn luyện. Linear probe giữ nguyên encoder và chỉ học lớp cuối, fine-tune cập nhật cả encoder.</p>
+      <div class="f">\( \mathcal L = -\sum_{n}\log\operatorname{softmax}\big(W_c\,\mathbf z^{(n)}\big)_{y_n} \)</div>
+      <div class="ex">Linear probe của EMIT học \(W_c\) cỡ 2 × 384 trên \(\mathbf z_{\text{CLS}}\) (Hình 2). GEARS học bằng hồi quy, dự đoán biểu hiện sau nhiễu loạn.</div></div>
+  </div>
+</section>
+
+<section class="col">
+  <h3>Tầng 4 · Trực quan hóa, không phải embedding để dùng tiếp</h3>
+  <p>Một số phương pháp cũng cho ra tọa độ ít chiều, nhưng mục đích là vẽ hình để con người nhìn cấu trúc cụm. Thường không nên dùng tọa độ này làm đầu vào cho bộ phân loại.</p>
+</section>
+<section class="wide">
+  <div class="methods">
+    <div class="mcard"><span class="kind">tầng 4 · trực quan hóa · tối ưu theo mẫu</span><h4>t-SNE và UMAP</h4>
+      <p>Đặt các điểm trong 2 hoặc 3 chiều sao cho quan hệ láng giềng gần được giữ lại. Khoảng cách giữa các cụm và kích thước cụm trên hình không mang ý nghĩa định lượng. t-SNE tối ưu tọa độ riêng cho tập điểm đang có, nên không có hàm áp dụng cho mẫu mới. UMAP có hàm chiếu mẫu mới nhưng chỉ xấp xỉ, và vẫn không giữ khoảng cách toàn cục.</p>
+      <div class="f">\( \min_{Y}\; \mathrm{KL}(P\,\|\,Q) = \sum_{i\neq j} p_{ij}\log\frac{p_{ij}}{q_{ij}} \)</div>
+      <div class="ex">Hàm mục tiêu của t-SNE (van der Maaten và Hinton, 2008). UMAP (McInnes và cộng sự, 2018) dùng cross-entropy trên đồ thị láng giềng mờ. Trong scRNA-seq, cả hai thường chạy trên 50 PC, tức là đứng sau một embedding thật.</div></div>
+    <div class="mcard"><span class="kind">ghi chú</span><h4>Hai trục phụ để mô tả một embedding</h4>
+      <p>Ngoài bốn tầng, có hai câu hỏi giúp đọc nhanh một mô hình. Thứ nhất, vector được tính bằng công thức cố định hay được học từ dữ liệu. Thứ hai, vector của một đối tượng có đổi theo ngữ cảnh hay không. Hai trục này là tính chất của tổ hợp, không phải tên một nhóm phương pháp.</p>
+      <div class="ex">Phổ k-mer cố định và không ngữ cảnh. Bảng tra của word2vec học được và không ngữ cảnh. Đầu ra transformer học được và có ngữ cảnh.</div></div>
+  </div>
+</section>
+
+<section class="wide">
+  <figure>
+  <div class="tbl"><table>
+    <thead><tr><th>Mô hình</th><th>Dữ liệu</th><th>Tầng 1 · đầu vào</th><th>Tầng 2 · kiến trúc</th><th>Tầng 3 · mục tiêu</th><th>Vector dùng tiếp</th></tr></thead>
+    <tbody>
+      <tr><td>Phổ k-mer</td><td>DNA, cfDNA</td><td>Vector đếm k-mer</td><td>Không có</td><td>Không có</td><td>Chính vector đếm</td></tr>
+      <tr><td>PCA trong GWAS</td><td>Genotype SNP</td><td>Dosage chuẩn hóa</td><td>Phép chiếu tuyến tính</td><td>Phương sai lớn nhất, tương đương tái tạo tuyến tính</td><td>Vài PC đầu, làm hiệp biến</td></tr>
+      <tr><td>dna2vec</td><td>DNA</td><td>Token k-mer</td><td>Bảng tra</td><td>Dự đoán ngữ cảnh</td><td>Hàng của bảng tra</td></tr>
+      <tr><td>scVI</td><td>scRNA-seq</td><td>Vector count và batch</td><td>Encoder và decoder nhiều lớp</td><td>Tái tạo (VAE, likelihood negative binomial)</td><td>Trung bình của \(q_\phi(\mathbf z\mid\mathbf x)\)</td></tr>
+      <tr><td>DNABERT</td><td>DNA</td><td>Token k-mer chồng lấp</td><td>Transformer</td><td>MLM</td><td>Vector [CLS] hoặc trung bình token</td></tr>
+      <tr><td>EMIT</td><td>cfDNA end-motif</td><td>Token motif xếp theo hạng tần suất</td><td>Transformer 1 lớp</td><td>MLM, sau đó linear probe có giám sát</td><td>Vector [CLS], 384 chiều</td></tr>
+      <tr><td>Geneformer</td><td>scRNA-seq</td><td>Token gene xếp theo hạng biểu hiện</td><td>Transformer</td><td>MLM</td><td>Vector gene hoặc tế bào</td></tr>
+      <tr><td>scGPT</td><td>scRNA-seq</td><td>Token gene cộng bin biểu hiện</td><td>Transformer</td><td>Dự đoán biểu hiện bị che</td><td>Vector gene hoặc tế bào</td></tr>
+      <tr><td>CLOOME</td><td>Cell Painting và phân tử</td><td>Ảnh, fingerprint phân tử</td><td>Hai encoder riêng</td><td>Tương phản giữa ảnh và phân tử</td><td>Vector ảnh và vector phân tử chung không gian</td></tr>
+      <tr><td>GEARS</td><td>Perturb-seq</td><td>Gene bị nhiễu loạn, biểu hiện nền</td><td>GNN trên đồ thị GO và đồ thị đồng biểu hiện</td><td>Có giám sát, hồi quy biểu hiện</td><td>Embedding nhiễu loạn và embedding gene</td></tr>
+    </tbody>
+  </table></div>
+  <figcaption><b>Bảng 1.</b> Mỗi mô hình là một lựa chọn ở từng tầng. Các mô hình dùng chung kiến trúc transformer khác nhau chủ yếu ở cách biểu diễn đầu vào. Vì vậy với dữ liệu omics, câu hỏi đầu tiên thường là token hóa thế nào, như §3 phân tích cho từng loại dữ liệu.</figcaption>
+  </figure>
 </section>
 
 <section class="wide">
@@ -471,7 +543,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <!-- 3.1 cfDNA -->
 <section class="col">
   <h3>3.1 · cfDNA end-motif và cách EMIT biến tần suất thành chuỗi</h3>
-  <div class="databox"><b>Dữ liệu</b>DNA tự do trong huyết tương (cfDNA) là các đoạn ngắn, trung vị khoảng 167 bp, sinh ra khi tế bào chết và DNA bị cắt bởi nuclease. Bốn nucleotide đầu tiên ở đầu 5' của mỗi đoạn gọi là end-motif. Jiang và cộng sự (2020) ghi nhận phân bố end-motif của người mắc ung thư biểu mô tế bào gan (HCC) khác người không mắc HCC, và độ đa dạng motif tăng ở nhóm HCC.</div>
+  <div class="databox"><b>Dữ liệu</b>DNA tự do trong huyết tương (cfDNA) là các đoạn ngắn, phân bố độ dài có đỉnh ở khoảng 167 bp, sinh ra khi tế bào chết và DNA bị cắt bởi nuclease. Bốn nucleotide đầu tiên ở đầu 5' của mỗi đoạn gọi là end-motif. Jiang và cộng sự (2020) ghi nhận phân bố end-motif của người mắc ung thư biểu mô tế bào gan (HCC) khác người không mắc HCC, và độ đa dạng motif tăng ở nhóm HCC.</div>
   <div class="inline-note"><b>Nền cho bước này trong <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a></b>Đầu 5′ của mỗi đoạn chỉ biết được sau khi read được khớp vào hệ gen tham chiếu và xác định chiều. Chương 12 (Thư viện và ba kiểu read) và Chương 13 (Điểm chất lượng Phred) mô tả read và tệp FASTQ. Chương 17 (Khớp read vào hệ gen tham chiếu), Chương 32 (Burrows–Wheeler Transform) và Chương 33 (Khớp xấp xỉ) đi từ quy trình tới thuật toán bên trong BWA. Chương 45 mô tả các định dạng FASTQ, SAM và BAM. Methyl hóa tại cytosine, nguồn tín hiệu của dữ liệu bisulfite và 5hmC trong EMIT, có ở Chương 7, mục Bộ biểu sinh.</div>
   <p>Cách đo độ đa dạng thường dùng là motif diversity score (MDS), tức entropy Shannon của 256 tần suất motif được chuẩn hóa về khoảng 0 đến 1.</p>
   <div class="eq"><span class="lbl">Phương trình 5 · motif diversity score (Jiang và cộng sự, 2020)</span>
@@ -617,8 +689,8 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
   \[ \text{Geneformer: } \pi = \operatorname{argsort}_{\downarrow}\Big(\frac{x_g / \sum_{g'} x_{g'}}{\operatorname{med}_g}\Big),\quad \mathbf h_t = E_{\text{gene}}[\pi_t] + W_p[t] \]
   \[ \text{scGPT: } b_g = \operatorname{bin}_{\text{phân vị trong tế bào}}(x_g),\quad \mathbf h_g = E_{\text{gene}}[g] + E_{\text{bin}}[b_g] \]
   </div>
-  <p>Bước chia cho trung vị corpus quan trọng hơn vẻ ngoài. Không có bước này, các gene giữ nhà (ACTB, GAPDH, gene ribosome) luôn đứng đầu mọi tế bào chỉ vì count tuyệt đối lớn. Có bước này, một gene biểu hiện gấp 10 lần mức điển hình của nó sẽ đứng trên gene giữ nhà đang ở mức nền. Mô phỏng 5 cho thấy sự khác biệt. Khi tự xây một mô hình nền cho scRNA-seq, có thể hỗ trợ cả hai chế độ, đặt bước chia trung vị corpus sau một cờ cấu hình, và cố định biên bin cho toàn corpus thay vì theo từng tế bào, để bin \(k\) có cùng ý nghĩa ở mọi tế bào.</p>
-  <p>EMIT và Geneformer dùng chung ý tưởng. Shen và cộng sự cho biết họ đã huấn luyện transformer trên tên gene sắp theo mức biểu hiện của 10 triệu tế bào trước đó, và EMIT áp dụng cùng phép xếp hạng cho end-motif.</p>
+  <p>Bước chia cho trung vị corpus quan trọng hơn vẻ ngoài. Không có bước này, các gene giữ nhà (ACTB, GAPDH, gene ribosome) luôn đứng đầu mọi tế bào chỉ vì count tuyệt đối lớn. Có bước này, một gene biểu hiện gấp 10 lần mức điển hình của nó sẽ đứng trên gene giữ nhà đang ở mức nền. Mô phỏng 5 cho thấy sự khác biệt.</p>
+  <p>EMIT và Geneformer dùng chung ý tưởng. Trong bài EMIT, nhóm tác giả cho biết trước đó họ đã huấn luyện transformer trên tên gene xếp theo mức biểu hiện của 10 triệu tế bào. Đó là mô hình tGPT, học bằng cách dự đoán gene kế tiếp, và bản công bố trên iScience ghi tập huấn luyện là 22,3 triệu tế bào (Shen và cộng sự, 2023). EMIT áp dụng cùng phép xếp hạng cho end-motif, nhưng học bằng MLM.</p>
 </section>
 
 <section class="wide">
@@ -657,7 +729,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
       <tr><td>cfDNA end-motif</td><td>Vector tần suất 256 motif, MDS</td><td>Có hàng nghìn mẫu không nhãn từ nhiều loại giải trình tự</td><td>Xếp hạng bất biến với độ sâu; MLM học được đồng xuất hiện motif</td><td>Cần độ lớn tuyệt đối của tần suất, hoặc dữ liệu chỉ từ một nền tảng với độ sâu đồng đều</td></tr>
       <tr><td>NIPT thể ba</td><td>Hiệu chỉnh GC, z-score, HMM theo locus</td><td>Câu hỏi mở rộng sang vi mất đoạn hoặc ước lượng fetal fraction từ fragmentomics</td><td>Tín hiệu là dịch chuyển vô hướng có mô hình sinh rõ ràng</td><td>Fetal fraction dưới khoảng 2%, khi cần thêm allelic ratio và độ sâu lớn hơn</td></tr>
       <tr><td>Genotype SNP</td><td>Dosage chuẩn hóa, PC của GRM làm hiệp biến</td><td>Dữ liệu cỡ biobank, hoặc có embedding SNP tiền huấn luyện</td><td>Số SNP lớn hơn số mẫu nhiều lần, bảng embedding sẽ quá khớp</td><td>Có bằng chứng hiệu ứng trội hoặc lặn, khi đó dùng one-hot</td></tr>
-      <tr><td>scRNA-seq</td><td>log1p CPM, 50 PC, đồ thị kNN</td><td>Tiền huấn luyện trên hàng triệu tế bào, rồi fine-tune hoặc linear probe</td><td>Rank khử ảnh hưởng của gene giữ nhà; bin giữ được độ lớn tương đối</td><td>Cần so sánh mức biểu hiện tuyệt đối giữa tế bào, khi đó bin theo tế bào không còn đúng</td></tr>
+      <tr><td>scRNA-seq</td><td>Chuẩn hóa theo tổng count, log1p, 50 PC, đồ thị kNN</td><td>Tiền huấn luyện trên hàng triệu tế bào, rồi fine-tune hoặc linear probe</td><td>Xếp hạng sau khi chia trung vị corpus khử ảnh hưởng của gene giữ nhà; bin giữ được độ lớn tương đối</td><td>Cần so sánh mức biểu hiện tuyệt đối giữa tế bào, khi đó bin theo tế bào không còn đúng</td></tr>
       <tr><td>Cell Painting</td><td>Chuẩn hóa theo plate, chọn đặc trưng, PCA</td><td>Có ảnh gốc và đủ mẫu để học trực tiếp từ ảnh</td><td>Đặc trưng thiết kế sẵn đã mang phần lớn thông tin hình thái</td><td>Batch giữa các nguồn lớn hơn hiệu ứng sinh học, cần hiệu chỉnh trước khi so sánh</td></tr>
     </tbody>
   </table></div>
@@ -729,6 +801,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
     <li>Price AL và cộng sự. Principal components analysis corrects for stratification in genome-wide association studies. <i>Nature Genetics</i> 38:904–909, 2006. doi:10.1038/ng1847.</li>
     <li>Bray MA và cộng sự. Cell Painting, a high-content image-based assay for morphological profiling using multiplexed fluorescent dyes. <i>Nature Protocols</i> 11:1757–1774, 2016. doi:10.1038/nprot.2016.105.</li>
     <li>Arevalo J và cộng sự. Evaluating batch correction methods for image-based cell profiling. <i>Nature Communications</i> 15:6516, 2024. doi:10.1038/s41467-024-50613-5.</li>
+    <li>Shen H và cộng sự. Generative pretraining from large-scale transcriptomes for single-cell deciphering. <i>iScience</i>, 2023.</li>
     <li>Kapoor S, Narayanan A. Leakage and the reproducibility crisis in machine-learning-based science. <i>Patterns</i> 4:100804, 2023. arXiv:2207.07048.</li>
   </ol>
   <footer>Hình 1, 3, 6 và 8 được tính từ checkpoint công khai và dữ liệu end-motif công khai trong kho mã EMIT. Encoder được viết lại bằng PyTorch thuần theo cấu hình BERT của checkpoint. Các số trong ô "Đọc \(W_p\)" và về weight tying cũng đo trên checkpoint này. Các mô phỏng chạy hoàn toàn trong trình duyệt.</footer>
@@ -1067,5 +1140,4 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',posm
 new MutationObserver(posmap).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 })();
 </script>
-
 </html>
