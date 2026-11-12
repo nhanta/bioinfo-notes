@@ -9,7 +9,7 @@
 <meta property="og:title" content="Embedding cho dữ liệu omics">
 <meta property="og:description" content="Embedding là gì, nằm ở đâu trong mô hình, các họ phương pháp chính, và cách embedding cho end-motif cfDNA, read count NIPT, genotype SNP, biểu hiện gene đơn bào, có mô phỏng và số liệu chạy lại từ EMIT.">
 <meta property="og:url" content="https://nhanta.github.io/bioinfo-notes/embedding/">
-<meta property="og:image" content="https://nhanta.github.io/bioinfo-notes/embedding/cover.png?v=2">
+<meta property="og:image" content="https://nhanta.github.io/bioinfo-notes/embedding/cover.png?v=3">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -79,7 +79,7 @@ header.hero{width:100%;max-width:var(--wide);padding-top:48px;display:grid;grid-
 /* math */
 .eq{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:18px 0;overflow-x:auto;font-size:1rem}
 .eq .lbl{font-family:var(--f-display);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px}
-mjx-container[display="true"]{margin:.4em 0!important}
+mjx-container[display="true"]{margin:.4em 0!important;max-width:100%;overflow-x:auto;overflow-y:hidden}
 /* figures */
 figure{margin:28px 0;width:100%}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
@@ -146,7 +146,7 @@ canvas{display:block;max-width:100%}
 .rk .d{position:absolute;top:2px;right:4px;font-size:.6rem}
 .rk .d.up{color:var(--nA)}.rk .d.dn{color:var(--nT)}
 /* product */
-.product{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px;align-items:center}
+.product{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px;align-items:start}
 .product h3{margin-top:0}
 .product ul{margin:8px 0 16px;padding-left:20px;font-size:.95rem}
 .cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;text-decoration:none;background:var(--accent);color:var(--surface);padding:11px 18px;border-radius:10px}
@@ -155,6 +155,22 @@ canvas{display:block;max-width:100%}
 .chapters div{display:grid;grid-template-columns:3.2em 1fr;gap:8px;align-items:baseline;font-size:.9rem;border-bottom:1px solid var(--line);padding-bottom:6px}
 .chapters span{font-family:var(--f-mono);color:var(--accent);font-size:.8rem}
 .inline-note{font-size:.92rem;background:var(--accent-soft);border-radius:10px;padding:12px 14px;margin:16px 0}
+.inline-note b{font-family:var(--f-display);font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:2px}
+.faq{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:20px 0;overflow:hidden}
+.faq-h{font-family:var(--f-display);font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);padding:12px 16px 6px}
+.faq details{border-top:1px solid var(--line);padding:0 16px}
+.faq summary{cursor:pointer;padding:12px 0;font-family:var(--f-display);font-weight:600;font-size:.95rem;line-height:1.45}
+.faq details[open]>summary{color:var(--accent)}
+.faq details>div{padding:0 0 14px;font-size:.95rem}
+.faq details>div p{margin:0 0 10px}
+.faq .tw{overflow-x:auto;margin:8px 0 12px}
+.faq table{font-size:.86rem}
+.faq th,.faq td{padding:7px 10px}
+.faq .tok{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:4px;margin:8px 0 12px}
+.faq .tok span{font-family:var(--f-mono);font-size:.78rem;border:1px solid var(--line);border-radius:6px;padding:4px 2px;text-align:center;background:var(--sunk)}
+.faq .tok small{display:block;color:var(--ink3);font-size:.68rem}
+.chapters p{margin:10px 0 0;font-family:var(--f-display);font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
+.chapters em{font-style:normal;color:var(--ink3);font-size:.78rem}
 .refs{font-size:.86rem;line-height:1.55;color:var(--ink2);padding-left:22px}
 .refs li{margin-bottom:6px}
 footer{margin-top:48px;font-size:.85rem;color:var(--ink3)}
@@ -179,8 +195,8 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
   <p class="lede col" style="max-width:780px;margin:0">Một mô hình học sâu không đọc được chuỗi "CCCA", con số "3 bản sao" hay genotype "0/1". Nó chỉ nhận vector số thực. Embedding là bước đổi các đối tượng sinh học đó thành vector, và cách đổi quyết định mô hình nhìn thấy gì trong dữ liệu. Bài này đi qua định nghĩa, vị trí của embedding trong mô hình, các họ phương pháp chính, rồi áp dụng cho bốn loại dữ liệu cụ thể là end-motif cfDNA, read count NIPT, genotype SNP và biểu hiện gene đơn bào.</p>
   <figure class="hero-fig" style="margin:0" aria-label="Từ đoạn cfDNA đến vector embedding">
     <p class="swipe">Vuốt ngang để xem đủ bốn bước của hình.</p>
-    <svg id="heroSvg" viewBox="0 0 1000 222" role="img"></svg>
-    <figcaption><b>Hình mở đầu.</b> Bốn bước EMIT dùng để đổi cfDNA thành dữ liệu mô hình đọc được, đọc theo các số trên hình. <b>(1)</b> Mỗi đoạn cfDNA trong huyết tương dài khoảng 167 bp. EMIT chỉ lấy 4 nucleotide ở đầu 5′ của đoạn, gọi là end-motif, ở đây là CCCA. <b>(2)</b> Có 4<sup>4</sup> = 256 end-motif khả dĩ, mỗi motif được gán một số nguyên gọi là token id. CCCA có token id 89. <b>(3)</b> Mô hình giữ một bảng \(W_x\) gồm 261 hàng, mỗi hàng là một vector 384 chiều được học trong lúc huấn luyện. Embedding của CCCA chính là hàng 89 của bảng này. Dải cột bên phải vẽ 32 trong 384 giá trị thật của hàng đó, cột hướng lên là giá trị dương, cột hướng xuống là giá trị âm. <b>(4)</b> Với mỗi mẫu, EMIT lấy ngẫu nhiên 10 triệu read, đếm số lần mỗi motif xuất hiện, giữ 128 motif phổ biến nhất theo thứ tự giảm dần, rồi thêm hai token đánh dấu [CLS] ở đầu và [SEP] ở cuối. Chuỗi 130 token này là đầu vào của mô hình, và mỗi token trong chuỗi đều đi qua bước (2) và (3). Ví dụ lấy từ dòng đầu của tệp <code>data/pretrained.trn.txt.gz</code> trong kho mã EMIT. Từng bước được giải thích kỹ ở <a href="#s1">§1</a> và <a href="#s3">§3.1</a>, nên bạn chưa cần hiểu hết hình này trước khi đọc tiếp.</figcaption>
+    <svg id="heroSvg" viewBox="0 0 1000 228" role="img"></svg>
+    <figcaption><b>Hình mở đầu.</b> Bốn bước EMIT dùng để đổi cfDNA thành dữ liệu mô hình đọc được, đọc theo các số trên hình. <b>(1)</b> Mỗi đoạn cfDNA trong huyết tương dài khoảng 167 bp. EMIT chỉ lấy 4 nucleotide ở đầu 5′ của đoạn, gọi là end-motif, ở đây là CCCA. <b>(2)</b> Có 4<sup>4</sup> = 256 end-motif khả dĩ, mỗi motif được gán một số nguyên gọi là token id. CCCA có token id 89. <b>(3)</b> Mô hình giữ một bảng \(W_x\) gồm 261 hàng, mỗi hàng là một vector 384 chiều được học trong lúc huấn luyện. Embedding của CCCA chính là hàng 89 của bảng này. Dải cột bên phải vẽ 32 trong 384 giá trị thật của hàng đó, cột hướng lên là giá trị dương, cột hướng xuống là giá trị âm. <b>(4)</b> Mỗi lần, EMIT lấy ngẫu nhiên 10 triệu read của một mẫu, đếm số lần mỗi motif xuất hiện, giữ 128 motif phổ biến nhất theo thứ tự giảm dần, rồi thêm hai token đánh dấu [CLS] ở đầu và [SEP] ở cuối. Chuỗi 130 token này là đầu vào của mô hình, và mỗi token trong chuỗi đều đi qua bước (2) và (3). Ví dụ lấy từ chuỗi đầu tiên trong dữ liệu tiền huấn luyện công khai của EMIT. Từng bước được giải thích kỹ ở <a href="#s1">§1</a> và <a href="#s3">§3.1</a>, nên bạn chưa cần hiểu hết hình này trước khi đọc tiếp.</figcaption>
   </figure>
   <nav class="toc" aria-label="Mục lục">
     <a href="#s1">1. Embedding là gì</a><a href="#s2">2. Các họ phương pháp</a><a href="#s3">3. Theo từng loại dữ liệu</a><a href="#s4">4. Bảng chọn nhanh</a><a href="#s5">5. Học phần nền</a><a href="#refs">Tài liệu</a>
@@ -198,12 +214,35 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
   \[ \mathbf{x}_i \;=\; W^{\top}\mathbf{e}_i \;=\; W[i,:] \in \mathbb{R}^{d},\qquad W\in\mathbb{R}^{|\mathcal{V}|\times d},\quad \mathbf{e}_i\in\{0,1\}^{|\mathcal{V}|} \]
   </div>
   <p>Vì vậy lớp embedding tương đương một lớp tuyến tính không có bias đặt sau mã one-hot, nhưng chi phí chỉ là \(O(d)\) cho mỗi token thay vì \(O(|\mathcal{V}|\,d)\). Trong mô hình EMIT (Shen và cộng sự, 2024), từ điển gồm 256 end-motif 4-mer cộng 5 token đặc biệt ([PAD], [UNK], [CLS], [SEP], [MASK]), nên \(|\mathcal{V}| = 261\). Bản checkpoint công khai dùng \(d = 384\), tức ma trận \(W_x\) có \(261 \times 384 = 100.224\) tham số.</p>
+  <div class="faq">
+    <div class="faq-h">Đọc kích thước \(W_x\) · bấm để mở</div>
+    <details><summary>Token id của CCCA vì sao là 89?</summary><div>
+      <p>Mỗi nucleotide được đổi thành một chữ số, A = 0, C = 1, G = 2, T = 3, rồi 4-mer được đọc như một số bốn chữ số trong hệ cơ số 4. Năm id đầu tiên đã dành cho token đặc biệt, nên các motif bắt đầu từ id 5.</p>
+      \[ \text{id} = 5 + 64\,b_1 + 16\,b_2 + 4\,b_3 + b_4, \qquad \text{CCCA: } 5 + 64 + 16 + 4 + 0 = 89 \]
+      <div class="tok"><span>[PAD]<small>id 0</small></span><span>[UNK]<small>id 1</small></span><span>[CLS]<small>id 2</small></span><span>[SEP]<small>id 3</small></span><span>[MASK]<small>id 4</small></span><span>AAAA<small>id 5</small></span><span>AAAC<small>id 6</small></span><span>CCCA<small>id 89</small></span><span>TTTT<small>id 260</small></span></div>
+      <p>Thứ tự này lấy từ tệp tokenizer của checkpoint EMIT. Tên token đặc biệt là viết tắt tiếng Anh của BERT. [CLS] (classification) đứng đầu chuỗi và mang vector dùng để phân loại. [SEP] (separator) đánh dấu cuối chuỗi. [PAD] (padding) lấp chỗ trống. [UNK] (unknown) thay cho token lạ. [MASK] thay cho motif bị che khi tiền huấn luyện.</p>
+    </div></details>
+    <details><summary>One-hot \(\mathbf e_i\) trông như thế nào, và vì sao nhân với \(W\) lại ra một hàng?</summary><div>
+      <p>\(\mathbf e_{89}\) là vector 261 phần tử, phần tử thứ 89 bằng 1, mọi phần tử khác bằng 0. Ví dụ với 3 token và \(d = 2\) (số minh họa):</p>
+      \[ W = \begin{bmatrix} 0{,}2 & -0{,}5 \\ 0{,}7 & 0{,}1 \\ -0{,}3 & 0{,}4 \end{bmatrix},\qquad \mathbf e_1 = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} \]
+      \[ W^{\top}\mathbf e_1 = 0\cdot\begin{bmatrix}0{,}2\\-0{,}5\end{bmatrix} + 1\cdot\begin{bmatrix}0{,}7\\0{,}1\end{bmatrix} + 0\cdot\begin{bmatrix}-0{,}3\\0{,}4\end{bmatrix} = \begin{bmatrix}0{,}7\\0{,}1\end{bmatrix} = W[1,:] \]
+      <p>Các hàng nhân với 0 biến mất, chỉ còn hàng nhân với 1. Trong code, máy không tạo vector one-hot mà lấy thẳng <code>W[89]</code>. Đây là one-hot trên cả từ điển 261 token, khác với one-hot nucleotide ở §2, nơi mỗi nucleotide là một vector 4 phần tử.</p>
+    </div></details>
+    <details><summary>261 là số mẫu hay số token? Còn 384 là gì?</summary><div>
+      <div class="tw"><table><thead><tr><th></th><th>Hàng</th><th>Cột</th><th>Loại</th></tr></thead><tbody>
+        <tr><td>\(W_x\)</td><td>261 token trong từ điển</td><td>384</td><td>tham số, học được</td></tr>
+        <tr><td>Một chuỗi sau khi tra bảng</td><td>130 vị trí trong chuỗi</td><td>384</td><td>activation, tính lại cho mỗi chuỗi</td></tr>
+      </tbody></table></div>
+      <p>Kích thước \(W_x\) không phụ thuộc số mẫu. Có 100 mẫu hay một triệu mẫu thì bảng vẫn là 261 × 384. 384 là số chiều \(d_{\text{model}}\), trong tệp cấu hình ghi là <code>hidden_size</code>. Đây là siêu tham số do người thiết kế chọn: chia đều cho 6 head, mỗi head 64 chiều, và lớp FFN rộng 1.536 = 4 × 384. EMIT thử ba cỡ 384, 768 và 1.536, bản công khai là cỡ nhỏ nhất. Bài báo không giải thích riêng vì sao chọn 384.</p>
+      <p>384 là số chiều của mỗi trạng thái ẩn, không phải số trạng thái ẩn. Một lớp có 130 trạng thái ẩn, mỗi token một vector 384 chiều. "Trạng thái ẩn" của HMM ở §3.2 là khái niệm khác, một nhãn rời rạc như "bình thường" hay "thể ba".</p>
+    </div></details>
+  </div>
 
   <h3>Hai nghĩa của chữ embedding</h3>
   <p>Trong các bài báo, cùng một chữ embedding được dùng cho hai đại lượng khác nhau. Nhầm hai đại lượng này là nguồn gây hiểu sai phổ biến khi đọc phần Methods.</p>
   <div class="split">
     <div><h4>Embedding đầu vào (input embedding)</h4><p>Vector của từng token, tra từ bảng \(W\) trước khi vào encoder. Vector này cố định cho mỗi token, không phụ thuộc vào mẫu. Trong EMIT, CCCA luôn ứng với cùng một hàng \(W_x[89,:]\).</p></div>
-    <div><h4>Biểu diễn đầu ra (representation)</h4><p>Vector của cả mẫu, lấy ở lớp cuối của encoder, ví dụ vector tại vị trí [CLS] hoặc trung bình các token. Vector này thay đổi theo ngữ cảnh. EMIT dùng vector [CLS] 384 chiều để phân loại ung thư bằng linear probe.</p></div>
+    <div><h4>Biểu diễn đầu ra (representation)</h4><p>Vector của cả chuỗi đầu vào, lấy ở lớp cuối của encoder, ví dụ vector tại vị trí [CLS] hoặc trung bình các token. Vector này thay đổi theo ngữ cảnh. EMIT dùng vector [CLS] 384 chiều để phân loại ung thư bằng linear probe.</p></div>
   </div>
 </section>
 
@@ -240,6 +279,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 
 <section class="col">
   <p>Chỉ số của motif trong ví dụ trên được tính bằng cách đọc 4-mer như một số trong hệ cơ số 4, với A = 0, C = 1, G = 2, T = 3. Đây cũng là cách các chương trình đếm k-mer đánh chỉ số mảng, và là lý do một từ điển k-mer luôn có đúng \(4^k\) phần tử. <a href="#s5">Mục 5</a> liệt kê các thuật toán chuỗi đứng trước bước embedding này.</p>
+  <div class="inline-note"><b>Tự viết hàm đếm này</b>Bài tập <i>Vector đếm k-mer</i> ở Chương 37 (Phân cụm chuỗi hệ gen) của BioAlgo Notebook yêu cầu viết hàm <code>kmer_vector(sequence, k)</code> trả về \(4^k\) số đếm theo thứ tự từ điển. Với \(k = 4\), thứ tự đó trùng với chỉ số cơ số 4 ở trên, nên CCCA nằm ở vị trí 84. Cộng thêm 5 token đặc biệt thì được token id 89 của EMIT.</div>
 
   <h3>Vị trí của embedding trong kiến trúc</h3>
   <p>Hình 2 đặt hai loại embedding vào sơ đồ EMIT với kích thước thật của checkpoint. Dữ liệu thô đi qua ba bước trước khi vào mạng nơ-ron (đếm, xếp hạng, token hóa). Lớp embedding là lớp đầu tiên có tham số học được. Sau encoder, cùng một ma trận \(Z\) phục vụ hai mục tiêu: dự đoán motif bị che trong giai đoạn tiền huấn luyện, và phân loại ung thư bằng vector [CLS] trong giai đoạn linear probe.</p>
@@ -248,20 +288,73 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="wide">
   <figure>
     <div class="panel scrollx"><svg id="archSvg" viewBox="0 0 1000 330" style="min-width:860px;width:100%;height:auto" role="img" aria-label="Kiến trúc EMIT"></svg></div>
-    <figcaption><b>Hình 2.</b> Dòng dữ liệu trong EMIT. Kích thước lấy từ <code>model/config.json</code> (hidden 384, 1 lớp encoder, 6 head, FFN 1536, từ điển 261) và từ <code>pretrain_gpu.sh</code> (độ dài chuỗi 130 = [CLS] + 128 motif + [SEP]). Trong <code>linear_probe.py</code>, encoder được đặt ở chế độ <code>eval()</code> và chạy dưới <code>torch.no_grad()</code>, nên chỉ ma trận \(384 \times 2\) của bộ phân loại được cập nhật.</figcaption>
+    <figcaption><b>Hình 2.</b> Dòng dữ liệu trong EMIT. Kích thước lấy từ tệp cấu hình của checkpoint công khai (hidden 384, 1 lớp encoder, 6 head, FFN 1536, từ điển 261) và từ script tiền huấn luyện (độ dài chuỗi 130 = [CLS] + 128 motif + [SEP]). \(\mathbf c \in \mathbb N^{256}\) là vector gồm 256 số đếm, mỗi motif một số, và số 256 ở đây là số chiều chứ không phải lũy thừa. \(\mathbf z_t\) là vector ở lớp cuối tại vị trí \(t\) bị che, \(g\) gồm một lớp tuyến tính 384 × 384, GELU và LayerNorm (Phương trình 4). Trong script linear probe của EMIT, encoder được đặt ở chế độ <code>eval()</code> và chạy dưới <code>torch.no_grad()</code>, nên chỉ ma trận \(W_c\) cỡ 2 × 384 của bộ phân loại được cập nhật.</figcaption>
   </figure>
+</section>
+
+<section class="col">
+  <div class="faq">
+    <div class="faq-h">Đọc Hình 2 · bấm để mở</div>
+    <details><summary>Một hàng dữ liệu là một đoạn cfDNA hay cả một mẫu?</summary><div>
+      <p>Không phải cả hai. Mỗi lần, EMIT lấy ngẫu nhiên 10 triệu read của một mẫu, đếm 256 end-motif, xếp giảm dần và giữ 128 motif đầu. Kết quả là một hàng 130 token. Mỗi mẫu được lấy như vậy nhiều lần, nên 4.606 mẫu tiền huấn luyện cho 204.366 chuỗi, trung bình khoảng 44 chuỗi mỗi mẫu.</p>
+      <p>EMIT không cho mỗi đoạn cfDNA một hàng vì ba lý do. Nhãn ung thư thuộc về người bệnh, trong khi phần lớn cfDNA của người bệnh vẫn đến từ tế bào bình thường. Mỗi đoạn chỉ cho một trong 256 motif, và một CCCA từ khối u giống hệt một CCCA từ tế bào máu, nên tín hiệu chỉ hiện ra ở phân bố trên hàng triệu đoạn. Cuối cùng, 4.606 mẫu × 10 triệu đoạn là khoảng 46 tỷ hàng.</p>
+    </div></details>
+    <details><summary>Các chuỗi của cùng một mẫu có được nối lại thành một vector dài không?</summary><div>
+      <p>Không. Mỗi chuỗi dài đúng 130 token và đi qua mô hình riêng. Một batch \(B\) chuỗi có token id cỡ \(B \times 130\), sau khi tra bảng thành \(B \times 130 \times 384\). Một mẫu có \(k\) chuỗi thì nhận \(k\) điểm số. Muốn có một điểm cho mỗi người bệnh phải gộp \(k\) điểm đó sau mô hình, việc này cần biết chuỗi nào thuộc người nào, mà dữ liệu công khai không có cột này.</p>
+    </div></details>
+    <details><summary>[CLS] đứng đầu chuỗi, sao lại lấy ở lớp cuối?</summary><div>
+      <p>"Đứng đầu" là vị trí trong chuỗi (vị trí 0), "lớp cuối" là độ sâu trong mô hình. Vector được lấy là ô ở cột [CLS] và hàng trên cùng. Ở đầu vào, vector của [CLS] là \(W_x[2] + W_p[0]\), giống hệt nhau ở mọi mẫu. Self-attention đưa thông tin của cả chuỗi vào vector này. Với \(X\) là ma trận 130 × 384 của chuỗi, mỗi head tính</p>
+      \[ \begin{aligned} \mathbf q_{\text{CLS}} &= X[0,:]\,W_Q \\ \mathbf k_j &= X[j,:]\,W_K, \quad \mathbf v_j = X[j,:]\,W_V \\ \alpha_j &= \operatorname{softmax}_j\!\Big(\frac{\mathbf q_{\text{CLS}}\cdot\mathbf k_j}{\sqrt{64}}\Big) \\ \mathbf o_{\text{CLS}} &= \sum_{j=0}^{129}\alpha_j\,\mathbf v_j \end{aligned} \]
+      <p>tức một trung bình có trọng số của cả 130 vị trí. Sáu head được ghép lại thành 384 chiều, rồi đi qua kết nối tắt, LayerNorm và FFN:</p>
+      \[ \begin{aligned} \mathbf h &= \operatorname{LN}\big(\mathbf x_{\text{CLS}} + \mathbf o W_O\big) \\ \mathbf z_{\text{CLS}} &= \operatorname{LN}\big(\mathbf h + \operatorname{FFN}(\mathbf h)\big) \\ \operatorname{FFN}(\mathbf h) &= \operatorname{GELU}(\mathbf h W_1 + \mathbf b_1)\,W_2 + \mathbf b_2 \end{aligned} \]
+      <p>Đặt [CLS] ở vị trí 0 là quy ước của BERT. Attention nhìn mọi vị trí cùng lúc, nên vị trí cố định chỉ giúp code luôn lấy được <code>last_hidden_state[:, 0]</code>. EMIT chỉ tiền huấn luyện bằng MLM, không có mục tiêu nào buộc [CLS] phải tóm tắt chuỗi, vậy mà vector này vẫn tách được HCC với người khỏe mạnh khi encoder bị đóng băng (§3.1).</p>
+    </div></details>
+    <details><summary>Lớp tuyến tính 384 → 2 cho ra xác suất bằng cách nào?</summary><div>
+      <p>Lớp tuyến tính cho ra hai số thực bất kỳ, gọi là logit, \(\boldsymbol\ell = W_c\,\mathbf z_{\text{CLS}}\). Softmax biến chúng thành xác suất trong khoảng (0, 1) có tổng bằng 1, \( p_1 = e^{\ell_1}/(e^{\ell_0}+e^{\ell_1}) = \sigma(\ell_1-\ell_0) \). Muốn nhãn 0 hoặc 1 thì lấy lớp có xác suất cao hơn. AUROC dùng chính \(p_1\), vì nó xét mọi ngưỡng chứ không chỉ ngưỡng 0,5. Với hai lớp, cách viết này tương đương hồi quy logistic một đầu ra.</p>
+    </div></details>
+  </div>
 </section>
 
 <section class="col">
   <div class="eq"><span class="lbl">Phương trình 2 · đầu vào encoder</span>
   \[ \mathbf{h}^{(0)}_t \;=\; \mathrm{LayerNorm}\big(W_x[m_t] + W_p[t] + W_s[0]\big),\qquad t = 0,\dots,129 \]
-  <span class="small muted">\(W_x\) là embedding token, \(W_p \in \mathbb{R}^{512\times 384}\) là embedding vị trí học được, \(W_s\) là embedding loại đoạn (segment) của BERT, ở đây luôn bằng 0.</span>
+  <span class="small muted">\(W_x\) là embedding token, \(W_p \in \mathbb{R}^{512\times 384}\) là embedding vị trí học được (EMIT chỉ dùng 130 hàng đầu), \(W_s\) là embedding loại đoạn (segment) của BERT, ở đây luôn bằng 0.</span>
   </div>
   <p>Transformer không phân biệt thứ tự token nếu không có \(W_p\), vì self-attention là phép toán bất biến với hoán vị. Bản gốc của Vaswani và cộng sự (2017) dùng mã vị trí hình sin cố định, còn BERT và EMIT học \(W_p\) như một bảng tham số.</p>
   <div class="eq"><span class="lbl">Phương trình 3 · mã vị trí hình sin (Vaswani và cộng sự, 2017)</span>
   \[ \mathrm{PE}(t, 2j) = \sin\!\Big(\frac{t}{10000^{2j/d}}\Big),\qquad \mathrm{PE}(t, 2j+1) = \cos\!\Big(\frac{t}{10000^{2j/d}}\Big) \]
   </div>
-  <p>EMIT có một điểm đáng chú ý. Chuỗi đầu vào được sắp theo tần suất giảm dần, nên vị trí \(t\) chính là hạng tần suất của motif. Embedding vị trí trong EMIT vì vậy mã hóa một đại lượng định lượng ("motif này phổ biến thứ \(t\) trong mẫu"), không chỉ thứ tự đọc như trong văn bản. Hình 3 cho thấy mô hình đã học được cấu trúc đó.</p>
+  <p>EMIT có một điểm đáng chú ý. Chuỗi đầu vào được sắp theo tần suất giảm dần, nên vị trí \(t\) chính là hạng tần suất của motif. Embedding vị trí trong EMIT vì vậy mã hóa hạng tần suất của motif trong mẫu ("motif này phổ biến thứ \(t\)"), không chỉ thứ tự đọc như trong văn bản. Hình 3 cho thấy mô hình đã học được cấu trúc đó.</p>
+  <div class="faq">
+    <div class="faq-h">Đọc \(W_p\) · bấm để mở</div>
+    <details><summary>512 hàng của \(W_p\) lấy từ đâu, khi chuỗi chỉ dài 130?</summary><div>
+      <p>512 là giá trị <code>max_position_embeddings</code> trong tệp cấu hình, cũng là giá trị mặc định của BERT, vốn xử lý câu dài tối đa 512 token. EMIT dựng mô hình từ cấu hình BERT và giữ nguyên số này. Chỉ 130 hàng đầu được tra tới, 382 hàng còn lại không bao giờ nhận gradient. Đo trên checkpoint:</p>
+      <div class="tw"><table><thead><tr><th>Hàng của \(W_p\)</th><th>Độ lệch chuẩn</th><th>Độ dài trung bình mỗi hàng</th></tr></thead><tbody>
+        <tr><td>0 đến 129, được dùng</td><td>0,034</td><td>0,62</td></tr>
+        <tr><td>130 đến 511, không dùng</td><td>0,019</td><td>0,38</td></tr>
+      </tbody></table></div>
+      <p>Tham số được khởi tạo với độ lệch chuẩn 0,02, nên một vector 384 chiều lúc khởi tạo dài khoảng \(0{,}02\sqrt{384} \approx 0{,}39\). Các hàng không dùng vẫn ở gần trạng thái đó, tức là 146.688 tham số thừa nằm trong checkpoint.</p>
+    </div></details>
+    <details><summary>\(W_p\) mã hóa tần suất hay hạng?</summary><div>
+      <p>Hạng. \(W_p\) chỉ là bảng tra theo số thứ tự vị trí. Nghĩa "tần suất" có được vì chuỗi đã được xếp trước khi vào mô hình. Hai mẫu sau (số minh họa) nhận cùng một vector vị trí cho CCCA:</p>
+      <div class="tw"><table><thead><tr><th></th><th>CCCA chiếm</th><th>CCTG chiếm</th><th>Vị trí của CCCA</th></tr></thead><tbody>
+        <tr><td>Mẫu A</td><td>5,0%</td><td>1,0%</td><td>1, nhận \(W_p[1]\)</td></tr>
+        <tr><td>Mẫu B</td><td>1,1%</td><td>1,0%</td><td>1, nhận \(W_p[1]\)</td></tr>
+      </tbody></table></div>
+      <p>Khoảng cách tần suất giữa các motif mất ở bước xếp hạng. Đổi lại, thứ hạng ít bị ảnh hưởng bởi độ sâu giải trình tự. Motif ngoài top 128 không có vị trí nào, mô hình chỉ biết nó không nằm trong top 128. Geneformer dùng cùng ý tưởng cho biểu hiện gene (§3.4).</p>
+    </div></details>
+    <details><summary>Cộng \(W_x[\text{id}] + W_p[t]\) thành một vector, làm sao mô hình còn biết token và vị trí?</summary><div>
+      <p>Hai số hạng là hai vector 384 chiều, không phải hai con số, và phép cộng thực hiện trên từng chiều. Để hai cặp (motif, vị trí) khác nhau cho cùng một tổng, cả 384 chiều phải trùng cùng lúc. Kiểm tra trên checkpoint EMIT với 256 motif × 128 vị trí = 32.768 vector tổng:</p>
+      <div class="tw"><table><tbody>
+        <tr><td>Khoảng cách nhỏ nhất giữa hai vector tổng</td><td>0,047, không có cặp nào trùng</td></tr>
+        <tr><td>Láng giềng gần nhất có cùng motif</td><td>100%</td></tr>
+        <tr><td>Đọc lại motif bằng một phép chiếu tuyến tính</td><td>32.768 / 32.768</td></tr>
+        <tr><td>Đọc lại vị trí bằng một phép chiếu tuyến tính</td><td>32.768 / 32.768</td></tr>
+        <tr><td>Trung bình |cos| giữa hàng \(W_x\) và hàng \(W_p\)</td><td>0,029, thấp hơn mức của hai vector ngẫu nhiên (0,041)</td></tr>
+      </tbody></table></div>
+      <p>\(W_x\) và \(W_p\) nằm theo các hướng gần như vuông góc, nên khi cộng chúng không lấn nhau. Về đại số, cộng hai embedding bằng ghép hai mã one-hot rồi cho qua một lớp tuyến tính, \( W_x[\text{id}] + W_p[t] = [\,W_x;\,W_p\,]^{\top}[\,\mathbf e_{\text{id}};\,\mathbf u_t\,] \). Ghép nối hai embedding thay vì cộng sẽ cho vector 768 chiều và mọi lớp phía sau phải lớn gấp đôi.</p>
+    </div></details>
+  </div>
 </section>
 
 <section class="col">
@@ -278,7 +371,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
   <p>Bảng \(W_x\) khởi tạo ngẫu nhiên và chỉ có nghĩa sau khi được tối ưu theo một hàm mục tiêu. EMIT dùng masked language modeling của BERT (Devlin và cộng sự, 2019). Mỗi chuỗi bị chọn ngẫu nhiên 15% token; trong số đó 80% được thay bằng [MASK], 10% bằng một motif ngẫu nhiên, 10% giữ nguyên. Mô hình phải khôi phục motif gốc từ ngữ cảnh.</p>
   <div class="eq"><span class="lbl">Phương trình 4 · hàm mất mát MLM</span>
   \[ \mathcal{L}_{\mathrm{MLM}}(\theta) \;=\; -\,\mathbb{E}_{M}\sum_{t\in\mathcal{M}} \log p_\theta\big(m_t \,\big|\, \tilde{M}\big),\qquad p_\theta(\cdot\mid\tilde M) = \mathrm{softmax}\big(g(\mathbf{z}_t)\,W_x^{\top} + \mathbf{b}\big) \]
-  <span class="small muted">\(\mathcal{M}\) là tập vị trí bị che, \(\tilde M\) là chuỗi sau khi che, \(g\) là head chiếu hai lớp. Trong BERT, ma trận đầu ra dùng chung trọng số với \(W_x\) (weight tying), nên gradient từ đầu ra cũng cập nhật trực tiếp bảng embedding.</span>
+  <span class="small muted">\(\mathcal{M}\) là tập vị trí bị che, \(\tilde M\) là chuỗi sau khi che, \(\mathbf z_t\) là vector ở lớp cuối tại vị trí \(t\), và \(g(\mathbf z) = \mathrm{LN}\big(\mathrm{GELU}(\mathbf z W_g + \mathbf b_g)\big)\) với \(W_g \in \mathbb{R}^{384\times 384}\). Ma trận đầu ra chính là \(W_x\) (weight tying). Trong checkpoint EMIT, trọng số đầu ra của head MLM trùng hoàn toàn với bảng embedding, nên gradient từ đầu ra cũng cập nhật trực tiếp \(W_x\).</span>
   </div>
   <p>Để dự đoán đúng một motif bị che ở hạng 40, mô hình phải biết những motif nào thường cùng xuất hiện quanh hạng 40 trong cùng loại mẫu. Hai motif có phân bố hạng giống nhau qua hàng nghìn mẫu sẽ nhận gradient giống nhau và có vector gần nhau. Đây là cơ chế tạo ra cụm CpG trong Hình 1.</p>
 </section>
@@ -295,7 +388,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
     <div class="mcard"><span class="kind">cố định · không ngữ cảnh</span><h4>One-hot và phổ k-mer</h4>
       <p>Mỗi chuỗi được biểu diễn bằng số lần xuất hiện của từng k-mer. Không có tham số, dễ giải thích, nhưng số chiều tăng theo \(4^k\) và mọi cặp k-mer khác nhau đều trực giao.</p>
       <div class="f">\( \phi_k(s)_u = \#\{\,i : s_{i..i+k-1} = u\,\},\quad u\in\{A,C,G,T\}^k \)</div>
-      <div class="ex">Baseline của EMIT là vector đếm 256 end-motif 4-mer. Với \(k = 6\) có 4.096 chiều, \(k = 8\) có 65.536 chiều.</div></div>
+      <div class="ex">Baseline của EMIT là vector đếm 256 end-motif 4-mer. Với \(k = 6\) có 4.096 chiều, \(k = 8\) có 65.536 chiều. Bài tập <i>Vector đếm k-mer</i>, BioAlgo Notebook Chương 37.</div></div>
     <div class="mcard"><span class="kind">cố định theo dữ liệu · tuyến tính</span><h4>PCA và SVD</h4>
       <p>Chiếu dữ liệu đã trừ trung bình lên \(k\) hướng có phương sai lớn nhất. Giữ được khoảng cách Euclid tốt nhất trong mọi phép chiếu tuyến tính hạng \(k\).</p>
       <div class="f">\( \mathbf{z} = V_k^{\top}(\mathbf{x}-\boldsymbol\mu),\quad X-\mathbf 1\boldsymbol\mu^\top = U\Sigma V^{\top} \)</div>
@@ -378,6 +471,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col">
   <h3>3.1 · cfDNA end-motif và cách EMIT biến tần suất thành chuỗi</h3>
   <div class="databox"><b>Dữ liệu</b>DNA tự do trong huyết tương (cfDNA) là các đoạn ngắn, trung vị khoảng 167 bp, sinh ra khi tế bào chết và DNA bị cắt bởi nuclease. Bốn nucleotide đầu tiên ở đầu 5' của mỗi đoạn gọi là end-motif. Jiang và cộng sự (2020) ghi nhận phân bố end-motif của người mắc ung thư biểu mô tế bào gan (HCC) khác người không mắc HCC, và độ đa dạng motif tăng ở nhóm HCC.</div>
+  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Đầu 5′ của mỗi đoạn chỉ biết được sau khi read được khớp vào hệ gen tham chiếu và xác định chiều. Chương 12 (Thư viện và ba kiểu read) và Chương 13 (Điểm chất lượng Phred) mô tả read và tệp FASTQ. Chương 17 (Khớp read vào hệ gen tham chiếu), Chương 32 (Burrows–Wheeler Transform) và Chương 33 (Khớp xấp xỉ) đi từ quy trình tới thuật toán bên trong BWA. Chương 45 mô tả các định dạng FASTQ, SAM và BAM. Methyl hóa tại cytosine, nguồn tín hiệu của dữ liệu bisulfite và 5hmC trong EMIT, có ở Chương 7, mục Bộ biểu sinh.</div>
   <p>Cách đo độ đa dạng thường dùng là motif diversity score (MDS), tức entropy Shannon của 256 tần suất motif được chuẩn hóa về khoảng 0 đến 1.</p>
   <div class="eq"><span class="lbl">Phương trình 5 · motif diversity score (Jiang và cộng sự, 2020)</span>
   \[ \mathrm{MDS} = -\sum_{i=1}^{256} \frac{P_i \log P_i}{\log 256},\qquad P_i = \frac{c_i}{\sum_j c_j} \]
@@ -460,6 +554,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
   <span class="small muted">\(r_{21}\) là tỷ lệ read rơi vào nhiễm sắc thể 21, \(N\) là tổng số read, \(c\) là hệ số biến thiên kỹ thuật ngoài nhiễu Poisson.</span>
   </div>
   <p>Teder và cộng sự dùng mô hình Markov ẩn (HMM) trên read count của các locus liên tiếp. HMM dựa trên read count đạt độ chính xác 0,89 trên dữ liệu mô phỏng, và khi đưa kết quả HMM vào cây quyết định hoặc SVM, độ chính xác tăng lên 0,98 và 0,99. Mô hình dùng read count và allelic ratio đạt độ chính xác tới 0,98 ngay cả khi fetal fraction chỉ 2%, trong khi các xét nghiệm thương mại thường yêu cầu tối thiểu 4%.</p>
+  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Độ sâu phủ, đại lượng quyết định số hạng nhiễu Poisson \(1/(N r_0)\) trong Phương trình 6, ở Chương 14. Thuật toán Viterbi giải mã HMM ở Chương 34. Chương này dùng profile HMM cho họ protein, nên mô hình khác với HMM trên read count, nhưng thuật toán giải mã là một.</div>
 </section>
 
 <section class="wide">
@@ -491,6 +586,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col">
   <h3>3.3 · Genotype SNP: dosage, one-hot hay token</h3>
   <div class="databox"><b>Dữ liệu</b>Bài HDRP (Ta và cộng sự, 2024) xử lý dữ liệu NGS đến genotype, imputation, rồi mã hóa mỗi SNP bằng 0, 1, 2 theo số allele khác allele tham chiếu, kèm hiệp biến. Nhóm tác giả xác định 8 SNP liên quan béo phì và 61 SNP liên quan đái tháo đường type 2, trong đó 50 SNP đã được báo cáo trước đó.</div>
+  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Genotype 0, 1, 2 là đầu ra của bước gọi biến thể. Chương 11 phân biệt SNV với SNP. Chương 19 trình bày cách gán kiểu gen từ read đã khớp bằng quy tắc Bayes.</div>
   <p>Cùng một genotype có thể được biểu diễn theo năm cách, mỗi cách giả định một mô hình di truyền khác nhau.</p>
 </section>
 <section class="wide">
@@ -514,6 +610,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col">
   <h3>3.4 · Biểu hiện gene đơn bào: xếp hạng hay chia bin</h3>
   <div class="databox"><b>Dữ liệu</b>Mỗi tế bào là một vector count khoảng 20.000 gene, phần lớn bằng 0. Đơn vị thông tin là cặp (gene, mức biểu hiện). Mô hình nền phải mã hóa cả hai thành phần này.</div>
+  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Đếm phân tử RNA làm thước đo mức biểu hiện có ở Chương 6 (Từ biểu hiện gen đến kiểu hình). Phép đo đơn bào có ở Chương 7, mục Đo từng tế bào. Hai chương này mở miễn phí trong bản dùng thử.</div>
   <p>Hai trường phái chính khác nhau ở cách mã hóa mức biểu hiện. Geneformer chuẩn hóa count theo tổng count của tế bào, chia cho trung vị khác 0 của gene đó trên toàn corpus, rồi sắp gene theo giá trị giảm dần. Chuỗi token chỉ chứa tên gene, mức biểu hiện được mã hóa ngầm trong vị trí. scGPT giữ mọi gene khác 0, chia giá trị của chúng thành các bin theo phân vị trong chính tế bào đó, và cộng embedding gene với embedding bin.</p>
   <div class="eq"><span class="lbl">Phương trình 10 · hai cách mã hóa</span>
   \[ \text{Geneformer: } \pi = \operatorname{argsort}_{\downarrow}\Big(\frac{x_g / \sum_{g'} x_{g'}}{\operatorname{med}_g}\Big),\quad \mathbf h_t = E_{\text{gene}}[\pi_t] + W_p[t] \]
@@ -569,28 +666,38 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col" id="s5">
   <span class="secno">§5</span>
   <h2>Những gì đứng trước bước embedding</h2>
-  <p>Mỗi hình trong bài đều bắt đầu từ một bước xử lý chuỗi cổ điển. Read phải được căn chỉnh lên bộ gen tham chiếu trước khi biết đầu 5' của đoạn cfDNA nằm ở đâu. Chỉ số k-mer trong Mô phỏng 1 là phép mã hóa cơ số 4. HMM mà Teder và cộng sự dùng cho NIPT giải bằng thuật toán Viterbi. Bước phân cụm biểu hiện gene là nơi các embedding scRNA-seq cuối cùng được đánh giá. Hiểu các bước này giúp đọc phần Methods của EMIT, Geneformer hay một pipeline NIPT mà không phải coi chúng là hộp đen.</p>
+  <p>Mỗi hình trong bài đều bắt đầu từ một bước xử lý dữ liệu cổ điển. Read phải được khớp vào hệ gen tham chiếu trước khi biết đầu 5' của đoạn cfDNA nằm ở đâu và theo chiều nào. Vector đếm k-mer trong Mô phỏng 1 dùng chỉ số cơ số 4. HMM mà Teder và cộng sự dùng cho NIPT được giải bằng thuật toán Viterbi. Genotype SNP là đầu ra của bước gọi biến thể. Hiểu các bước này giúp đọc phần Methods của EMIT, Geneformer hay một pipeline NIPT mà không phải coi chúng là hộp đen. Các chương liệt kê dưới đây là nền cho từng bước. Embedding và mô hình nền là phần đi tiếp, không nằm trong nội dung của ứng dụng.</p>
 </section>
 <section class="wide">
   <div class="product">
     <div style="min-width:0">
       <div class="eyebrow">Ứng dụng học tập trên Windows</div>
       <h3>BioAlgo Notebook</h3>
-      <p style="font-size:.98rem">BioAlgo Notebook dạy tin sinh học theo ba phần học là Sự sống và di truyền, Giải trình tự thế hệ mới, và Thuật toán tin sinh học. Mỗi chương gồm lý thuyết, bài tập Python viết và chấm ngay trong ứng dụng, và kiểm tra offline với nhiều bộ test. Lý thuyết song ngữ Việt và Anh.</p>
+      <p style="font-size:.98rem">BioAlgo Notebook có 52 chương trong sáu phần học là Sự sống và di truyền, Python cơ bản, Giải trình tự thế hệ mới, Thuật toán tin sinh học, Bash cơ bản, và Phân tích trình tự. Mỗi chương gồm lý thuyết, bài tập Python viết và chấm ngay trong ứng dụng, và kiểm tra offline với nhiều bộ test. Lý thuyết song ngữ Việt và Anh.</p>
       <ul>
         <li>Chấm bài ngay trên máy, không cần tài khoản hay máy chủ.</li>
-        <li>Bản dùng thử không giới hạn thời gian, mở chương mẫu về mã di truyền, và hiện đủ mục lục các chương còn lại.</li>
+        <li>Bản dùng thử không giới hạn thời gian, mở miễn phí 7 chương của phần Sự sống và di truyền, và hiện đủ mục lục các chương còn lại.</li>
       </ul>
       <a class="cta" id="storeLink" href="https://apps.microsoft.com/detail/9NWXL3WX0H40" target="_blank" rel="noopener">Xem trên Microsoft Store <span aria-hidden="true">↗</span></a>
     </div>
     <div class="chapters" style="min-width:0">
-      <div class="small muted" style="border:0;display:block">Các chương liên quan trực tiếp đến bài này</div>
-      <div><span>Ch. 2</span>Biểu diễn chuỗi và định dạng file (FASTA, reverse complement)</div>
-      <div><span>Ch. 11</span>Burrows–Wheeler Transform, nền của BWA và Bowtie</div>
-      <div><span>Ch. 12</span>Approximate matching và read mapping</div>
-      <div><span>Ch. 13</span>Profile HMM và thuật toán Viterbi</div>
-      <div><span>Ch. 14</span>Sinh k-mer, đồ thị de Bruijn và lắp ráp genome</div>
-      <div><span>Ch. 15</span>Phân cụm biểu hiện gene</div>
+      <div class="small muted" style="border:0;display:block">Các chương làm nền cho bài này, kèm mục tương ứng trong bài</div>
+      <p>Dữ liệu</p>
+      <div><span>Ch. 6</span><span style="font:inherit;color:inherit">Từ biểu hiện gen đến kiểu hình <em>§3.4</em></span></div>
+      <div><span>Ch. 7</span><span style="font:inherit;color:inherit">Các ngành omics và ứng dụng thực tế <em>§3.1, §3.4</em></span></div>
+      <div><span>Ch. 12</span><span style="font:inherit;color:inherit">Thư viện và ba kiểu read <em>§3.1</em></span></div>
+      <div><span>Ch. 13</span><span style="font:inherit;color:inherit">Điểm chất lượng Phred <em>Hình 2</em></span></div>
+      <div><span>Ch. 14</span><span style="font:inherit;color:inherit">Độ sâu phủ, độ phủ trung bình, WGS và WES <em>§3.2</em></span></div>
+      <p>Từ read đến genotype</p>
+      <div><span>Ch. 11</span><span style="font:inherit;color:inherit">Phân loại biến thể trên DNA <em>§3.3</em></span></div>
+      <div><span>Ch. 17</span><span style="font:inherit;color:inherit">Khớp read vào hệ gen tham chiếu <em>§3.1</em></span></div>
+      <div><span>Ch. 19</span><span style="font:inherit;color:inherit">Từ read đã khớp đến kiểu gen <em>§3.3</em></span></div>
+      <div><span>Ch. 32</span><span style="font:inherit;color:inherit">Burrows–Wheeler Transform <em>§3.1</em></span></div>
+      <div><span>Ch. 33</span><span style="font:inherit;color:inherit">Khớp xấp xỉ <em>§3.1</em></span></div>
+      <div><span>Ch. 45</span><span style="font:inherit;color:inherit">Dữ liệu, định dạng và kết quả dự kiến <em>Hình 2</em></span></div>
+      <p>Thuật toán dùng trong bài</p>
+      <div><span>Ch. 34</span><span style="font:inherit;color:inherit">Profile HMM &amp; Viterbi <em>§3.2</em></span></div>
+      <div><span>Ch. 37</span><span style="font:inherit;color:inherit">Phân cụm chuỗi hệ gen, vector đếm k-mer và k-means <em>§1, §2</em></span></div>
     </div>
   </div>
 </section>
@@ -623,7 +730,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
     <li>Arevalo J và cộng sự. Evaluating batch correction methods for image-based cell profiling. <i>Nature Communications</i> 15:6516, 2024. doi:10.1038/s41467-024-50613-5.</li>
     <li>Kapoor S, Narayanan A. Leakage and the reproducibility crisis in machine-learning-based science. <i>Patterns</i> 4:100804, 2023. arXiv:2207.07048.</li>
   </ol>
-  <footer>Hình 1, 3, 6 và 8 được tính từ checkpoint <code>model/pytorch_model.bin</code> và các file <code>data/*.csv.gz</code> trong kho mã EMIT. Encoder được viết lại bằng PyTorch thuần theo cấu hình BERT trong <code>config.json</code>. Các mô phỏng chạy hoàn toàn trong trình duyệt.</footer>
+  <footer>Hình 1, 3, 6 và 8 được tính từ checkpoint công khai và dữ liệu end-motif công khai trong kho mã EMIT. Encoder được viết lại bằng PyTorch thuần theo cấu hình BERT của checkpoint. Các số trong ô "Đọc \(W_p\)" và về weight tying cũng đo trên checkpoint này. Các mô phỏng chạy hoàn toàn trong trình duyệt.</footer>
 </section>
 </main>
 
@@ -678,9 +785,13 @@ function hero(){
   const gsv = S('svg',{width:210,height:60,viewBox:'0 0 210 60'},g); vecBars(gsv, v, 210, 60);
   S('text',{x:770,y:116,'font-size':11,fill:'var(--ink3)'},s,'32 chiều đầu, giá trị thật'); S('text',{x:770,y:131,'font-size':11,fill:'var(--ink3)'},s,'từ checkpoint EMIT');
   // bottom strip: rank sequence
-  badge(29,145,4); S('text',{x:44,y:150,'font-size':13,fill:'var(--ink3)','font-weight':600,'letter-spacing':'.06em'},s,'MỘT MẪU = 128 MOTIF XẾP THEO TẦN SUẤT');
+  badge(29,145,4); S('text',{x:44,y:150,'font-size':13,fill:'var(--ink3)','font-weight':600,'letter-spacing':'.06em'},s,'MỘT CHUỖI = 128 MOTIF XẾP THEO TẦN SUẤT');
   const ex = ['[CLS]','CCCA','CCTG','CCAG','CCCT','CCTT','CCTC','GCCT','CCAT','CCAA','CCAC','CCCC','GCTG','…','[SEP]'];
-  ex.forEach((t,i)=>{ const x=20+i*65; const sp = t.startsWith('[')||t==='…';
+  ex.forEach((t,i)=>{ const x=20+i*65;
+    if(t==='…'){ S('text',{x:x+30,y:184,'text-anchor':'middle','font-size':16,fill:'var(--ink3)'},s,'⋯');
+      S('text',{x:x+30,y:208,'text-anchor':'middle','font-size':10,fill:'var(--ink3)'},s,'hạng 13');
+      S('text',{x:x+30,y:220,'text-anchor':'middle','font-size':10,fill:'var(--ink3)'},s,'đến 128'); return; }
+    const sp = t.startsWith('[');
     S('rect',{x,y:162,width:60,height:30,rx:6,fill:sp?'var(--sunk)':'var(--surface)',stroke:'var(--line)'},s);
     S('text',{x:x+30,y:182,'text-anchor':'middle','font-size':sp?10:12,'font-family':'var(--f-mono)',fill:sp?'var(--ink3)':'var(--ink)'},s,t);
     if(!sp) S('text',{x:x+30,y:208,'text-anchor':'middle','font-size':10,fill:'var(--ink3)'},s,'hạng '+i); });
@@ -738,7 +849,7 @@ function arch(){
   S('text',{x:420,y:22,'font-size':11,'font-weight':700,fill:'var(--accent)','letter-spacing':'.08em'},s,'MẠNG NƠ-RON');
   box(10,40,120,96,'Read',["BAM, FASTQ","$10⁷ read / chuỗi"],'data');
   arr(130,88,150,88);
-  box(150,40,120,96,'Đếm 4-mer',["đầu 5' mỗi read","$c ∈ ℕ^256"],'data');
+  box(150,40,120,96,'Đếm 4-mer',["đầu 5' mỗi read","$c ∈ ℕ^256","256 số đếm"],'data');
   arr(270,88,290,88);
   box(290,40,120,96,'Xếp hạng',["giữ 128 motif đầu","$[CLS] m₀…m₁₂₇ [SEP]"],'data');
   arr(410,88,430,88);
@@ -747,13 +858,14 @@ function arch(){
   box(600,40,150,96,'Transformer encoder',["1 lớp · 6 head","FFN 384 → 1536 → 384","$Z ∈ ℝ^(130×384)"],'');
   arr(750,70,790,50); arr(750,106,790,196);
   box(790,10,200,86,'Head MLM (tiền huấn luyện)',["$softmax(g(z_t) W_xᵀ)","dự đoán motif bị che 15%"],'');
-  box(790,150,200,104,'Biểu diễn đầu ra',["$z_CLS = Z[0,:] ∈ ℝ^384","linear probe 384 × 2","encoder đóng băng"],'emb');
+  box(790,146,200,116,'Biểu diễn đầu ra',["$z_CLS = Z[0,:] ∈ ℝ^384","$→ linear 384 → 2 → softmax","→ p(ung thư) ∈ (0, 1)","chỉ học W_c, encoder đóng băng"],'emb');
   // annotate two senses
   S('text',{x:505,y:172,'text-anchor':'middle','font-size':11.5,'font-weight':700,fill:'var(--accent)'},s,'① embedding của từng token');
-  S('text',{x:890,y:274,'text-anchor':'middle','font-size':11.5,'font-weight':700,fill:'var(--accent)'},s,'② embedding của cả mẫu');
+  S('text',{x:890,y:280,'text-anchor':'middle','font-size':11.5,'font-weight':700,fill:'var(--accent)'},s,'② embedding của cả chuỗi');
+  S('text',{x:890,y:296,'text-anchor':'middle','font-size':10.5,fill:'var(--ink3)'},s,'(một lần lấy 10⁷ read của một mẫu)');
   S('text',{x:10,y:200,'font-size':12,fill:'var(--ink2)'},s,'Số tham số của checkpoint 384 chiều:');
   const rows=[['W_x','261 × 384','100.224'],['W_p','512 × 384','196.608'],['1 lớp encoder','Q, K, V, O, FFN','≈ 1,77 triệu']];
-  rows.forEach((r,i)=>{ S('text',{x:10,y:224+i*20,'font-size':11.5,'font-family':'var(--f-mono)',fill:'var(--ink)'},s,r[0]); S('text',{x:130,y:224+i*20,'font-size':11.5,'font-family':'var(--f-mono)',fill:'var(--ink2)'},s,r[1]); S('text',{x:300,y:224+i*20,'font-size':11.5,'font-family':'var(--f-mono)',fill:'var(--ink)','text-anchor':'end'},s,r[2]); });
+  rows.forEach((r,i)=>{ S('text',{x:10,y:224+i*20,'font-size':11.5,'font-family':'var(--f-mono)',fill:'var(--ink)'},s,r[0]); S('text',{x:130,y:224+i*20,'font-size':11.5,'font-family':'var(--f-mono)',fill:'var(--ink2)'},s,r[1]); S('text',{x:390,y:224+i*20,'font-size':11.5,'font-family':'var(--f-mono)',fill:'var(--ink)','text-anchor':'end'},s,r[2]); });
   S('text',{x:10,y:300,'font-size':11,fill:'var(--ink3)'},s,'Phần embedding chiếm khoảng 14% tổng số tham số của mô hình này.');
 }
 
