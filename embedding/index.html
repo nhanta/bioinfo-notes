@@ -155,6 +155,7 @@ canvas{display:block;max-width:100%}
 .chapters div{display:grid;grid-template-columns:3.2em 1fr;gap:8px;align-items:baseline;font-size:.9rem;border-bottom:1px solid var(--line);padding-bottom:6px}
 .chapters span{font-family:var(--f-mono);color:var(--accent);font-size:.8rem}
 .inline-note{font-size:.92rem;background:var(--accent-soft);border-radius:10px;padding:12px 14px;margin:16px 0}
+.inline-note a.store,.mcard a.store{color:var(--accent);text-decoration:underline;text-underline-offset:2px;font-weight:600}
 .inline-note b{font-family:var(--f-display);font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:2px}
 .faq{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:20px 0;overflow:hidden}
 .faq-h{font-family:var(--f-display);font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);padding:12px 16px 6px}
@@ -279,7 +280,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 
 <section class="col">
   <p>Chỉ số của motif trong ví dụ trên được tính bằng cách đọc 4-mer như một số trong hệ cơ số 4, với A = 0, C = 1, G = 2, T = 3. Đây cũng là cách các chương trình đếm k-mer đánh chỉ số mảng, và là lý do một từ điển k-mer luôn có đúng \(4^k\) phần tử. <a href="#s5">Mục 5</a> liệt kê các thuật toán chuỗi đứng trước bước embedding này.</p>
-  <div class="inline-note"><b>Tự viết hàm đếm này</b>Bài tập <i>Vector đếm k-mer</i> ở Chương 37 (Phân cụm chuỗi hệ gen) của BioAlgo Notebook yêu cầu viết hàm <code>kmer_vector(sequence, k)</code> trả về \(4^k\) số đếm theo thứ tự từ điển. Với \(k = 4\), thứ tự đó trùng với chỉ số cơ số 4 ở trên, nên CCCA nằm ở vị trí 84. Cộng thêm 5 token đặc biệt thì được token id 89 của EMIT.</div>
+  <div class="inline-note"><b>Tự viết hàm đếm này</b>Bài tập <i>Vector đếm k-mer</i> ở Chương 37 (Phân cụm chuỗi hệ gen) của <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a> yêu cầu viết hàm <code>kmer_vector(sequence, k)</code> trả về \(4^k\) số đếm theo thứ tự từ điển. Với \(k = 4\), thứ tự đó trùng với chỉ số cơ số 4 ở trên, nên CCCA nằm ở vị trí 84. Cộng thêm 5 token đặc biệt thì được token id 89 của EMIT.</div>
 
   <h3>Vị trí của embedding trong kiến trúc</h3>
   <p>Hình 2 đặt hai loại embedding vào sơ đồ EMIT với kích thước thật của checkpoint. Dữ liệu thô đi qua ba bước trước khi vào mạng nơ-ron (đếm, xếp hạng, token hóa). Lớp embedding là lớp đầu tiên có tham số học được. Sau encoder, cùng một ma trận \(Z\) phục vụ hai mục tiêu: dự đoán motif bị che trong giai đoạn tiền huấn luyện, và phân loại ung thư bằng vector [CLS] trong giai đoạn linear probe.</p>
@@ -388,7 +389,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
     <div class="mcard"><span class="kind">cố định · không ngữ cảnh</span><h4>One-hot và phổ k-mer</h4>
       <p>Mỗi chuỗi được biểu diễn bằng số lần xuất hiện của từng k-mer. Không có tham số, dễ giải thích, nhưng số chiều tăng theo \(4^k\) và mọi cặp k-mer khác nhau đều trực giao.</p>
       <div class="f">\( \phi_k(s)_u = \#\{\,i : s_{i..i+k-1} = u\,\},\quad u\in\{A,C,G,T\}^k \)</div>
-      <div class="ex">Baseline của EMIT là vector đếm 256 end-motif 4-mer. Với \(k = 6\) có 4.096 chiều, \(k = 8\) có 65.536 chiều. Bài tập <i>Vector đếm k-mer</i>, BioAlgo Notebook Chương 37.</div></div>
+      <div class="ex">Baseline của EMIT là vector đếm 256 end-motif 4-mer. Với \(k = 6\) có 4.096 chiều, \(k = 8\) có 65.536 chiều. Bài tập <i>Vector đếm k-mer</i>, <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a> Chương 37.</div></div>
     <div class="mcard"><span class="kind">cố định theo dữ liệu · tuyến tính</span><h4>PCA và SVD</h4>
       <p>Chiếu dữ liệu đã trừ trung bình lên \(k\) hướng có phương sai lớn nhất. Giữ được khoảng cách Euclid tốt nhất trong mọi phép chiếu tuyến tính hạng \(k\).</p>
       <div class="f">\( \mathbf{z} = V_k^{\top}(\mathbf{x}-\boldsymbol\mu),\quad X-\mathbf 1\boldsymbol\mu^\top = U\Sigma V^{\top} \)</div>
@@ -471,7 +472,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col">
   <h3>3.1 · cfDNA end-motif và cách EMIT biến tần suất thành chuỗi</h3>
   <div class="databox"><b>Dữ liệu</b>DNA tự do trong huyết tương (cfDNA) là các đoạn ngắn, trung vị khoảng 167 bp, sinh ra khi tế bào chết và DNA bị cắt bởi nuclease. Bốn nucleotide đầu tiên ở đầu 5' của mỗi đoạn gọi là end-motif. Jiang và cộng sự (2020) ghi nhận phân bố end-motif của người mắc ung thư biểu mô tế bào gan (HCC) khác người không mắc HCC, và độ đa dạng motif tăng ở nhóm HCC.</div>
-  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Đầu 5′ của mỗi đoạn chỉ biết được sau khi read được khớp vào hệ gen tham chiếu và xác định chiều. Chương 12 (Thư viện và ba kiểu read) và Chương 13 (Điểm chất lượng Phred) mô tả read và tệp FASTQ. Chương 17 (Khớp read vào hệ gen tham chiếu), Chương 32 (Burrows–Wheeler Transform) và Chương 33 (Khớp xấp xỉ) đi từ quy trình tới thuật toán bên trong BWA. Chương 45 mô tả các định dạng FASTQ, SAM và BAM. Methyl hóa tại cytosine, nguồn tín hiệu của dữ liệu bisulfite và 5hmC trong EMIT, có ở Chương 7, mục Bộ biểu sinh.</div>
+  <div class="inline-note"><b>Nền cho bước này trong <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a></b>Đầu 5′ của mỗi đoạn chỉ biết được sau khi read được khớp vào hệ gen tham chiếu và xác định chiều. Chương 12 (Thư viện và ba kiểu read) và Chương 13 (Điểm chất lượng Phred) mô tả read và tệp FASTQ. Chương 17 (Khớp read vào hệ gen tham chiếu), Chương 32 (Burrows–Wheeler Transform) và Chương 33 (Khớp xấp xỉ) đi từ quy trình tới thuật toán bên trong BWA. Chương 45 mô tả các định dạng FASTQ, SAM và BAM. Methyl hóa tại cytosine, nguồn tín hiệu của dữ liệu bisulfite và 5hmC trong EMIT, có ở Chương 7, mục Bộ biểu sinh.</div>
   <p>Cách đo độ đa dạng thường dùng là motif diversity score (MDS), tức entropy Shannon của 256 tần suất motif được chuẩn hóa về khoảng 0 đến 1.</p>
   <div class="eq"><span class="lbl">Phương trình 5 · motif diversity score (Jiang và cộng sự, 2020)</span>
   \[ \mathrm{MDS} = -\sum_{i=1}^{256} \frac{P_i \log P_i}{\log 256},\qquad P_i = \frac{c_i}{\sum_j c_j} \]
@@ -554,7 +555,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
   <span class="small muted">\(r_{21}\) là tỷ lệ read rơi vào nhiễm sắc thể 21, \(N\) là tổng số read, \(c\) là hệ số biến thiên kỹ thuật ngoài nhiễu Poisson.</span>
   </div>
   <p>Teder và cộng sự dùng mô hình Markov ẩn (HMM) trên read count của các locus liên tiếp. HMM dựa trên read count đạt độ chính xác 0,89 trên dữ liệu mô phỏng, và khi đưa kết quả HMM vào cây quyết định hoặc SVM, độ chính xác tăng lên 0,98 và 0,99. Mô hình dùng read count và allelic ratio đạt độ chính xác tới 0,98 ngay cả khi fetal fraction chỉ 2%, trong khi các xét nghiệm thương mại thường yêu cầu tối thiểu 4%.</p>
-  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Độ sâu phủ, đại lượng quyết định số hạng nhiễu Poisson \(1/(N r_0)\) trong Phương trình 6, ở Chương 14. Thuật toán Viterbi giải mã HMM ở Chương 34. Chương này dùng profile HMM cho họ protein, nên mô hình khác với HMM trên read count, nhưng thuật toán giải mã là một.</div>
+  <div class="inline-note"><b>Nền cho bước này trong <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a></b>Độ sâu phủ, đại lượng quyết định số hạng nhiễu Poisson \(1/(N r_0)\) trong Phương trình 6, ở Chương 14. Thuật toán Viterbi giải mã HMM ở Chương 34. Chương này dùng profile HMM cho họ protein, nên mô hình khác với HMM trên read count, nhưng thuật toán giải mã là một.</div>
 </section>
 
 <section class="wide">
@@ -586,7 +587,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col">
   <h3>3.3 · Genotype SNP: dosage, one-hot hay token</h3>
   <div class="databox"><b>Dữ liệu</b>Bài HDRP (Ta và cộng sự, 2024) xử lý dữ liệu NGS đến genotype, imputation, rồi mã hóa mỗi SNP bằng 0, 1, 2 theo số allele khác allele tham chiếu, kèm hiệp biến. Nhóm tác giả xác định 8 SNP liên quan béo phì và 61 SNP liên quan đái tháo đường type 2, trong đó 50 SNP đã được báo cáo trước đó.</div>
-  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Genotype 0, 1, 2 là đầu ra của bước gọi biến thể. Chương 11 phân biệt SNV với SNP. Chương 19 trình bày cách gán kiểu gen từ read đã khớp bằng quy tắc Bayes.</div>
+  <div class="inline-note"><b>Nền cho bước này trong <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a></b>Genotype 0, 1, 2 là đầu ra của bước gọi biến thể. Chương 11 phân biệt SNV với SNP. Chương 19 trình bày cách gán kiểu gen từ read đã khớp bằng quy tắc Bayes.</div>
   <p>Cùng một genotype có thể được biểu diễn theo năm cách, mỗi cách giả định một mô hình di truyền khác nhau.</p>
 </section>
 <section class="wide">
@@ -610,7 +611,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="col">
   <h3>3.4 · Biểu hiện gene đơn bào: xếp hạng hay chia bin</h3>
   <div class="databox"><b>Dữ liệu</b>Mỗi tế bào là một vector count khoảng 20.000 gene, phần lớn bằng 0. Đơn vị thông tin là cặp (gene, mức biểu hiện). Mô hình nền phải mã hóa cả hai thành phần này.</div>
-  <div class="inline-note"><b>Nền cho bước này trong BioAlgo Notebook</b>Đếm phân tử RNA làm thước đo mức biểu hiện có ở Chương 6 (Từ biểu hiện gen đến kiểu hình). Phép đo đơn bào có ở Chương 7, mục Đo từng tế bào. Hai chương này mở miễn phí trong bản dùng thử.</div>
+  <div class="inline-note"><b>Nền cho bước này trong <a class="store" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding-note" target="_blank" rel="noopener">BioAlgo Notebook&nbsp;↗</a></b>Đếm phân tử RNA làm thước đo mức biểu hiện có ở Chương 6 (Từ biểu hiện gen đến kiểu hình). Phép đo đơn bào có ở Chương 7, mục Đo từng tế bào. Hai chương này mở miễn phí trong bản dùng thử.</div>
   <p>Hai trường phái chính khác nhau ở cách mã hóa mức biểu hiện. Geneformer chuẩn hóa count theo tổng count của tế bào, chia cho trung vị khác 0 của gene đó trên toàn corpus, rồi sắp gene theo giá trị giảm dần. Chuỗi token chỉ chứa tên gene, mức biểu hiện được mã hóa ngầm trong vị trí. scGPT giữ mọi gene khác 0, chia giá trị của chúng thành các bin theo phân vị trong chính tế bào đó, và cộng embedding gene với embedding bin.</p>
   <div class="eq"><span class="lbl">Phương trình 10 · hai cách mã hóa</span>
   \[ \text{Geneformer: } \pi = \operatorname{argsort}_{\downarrow}\Big(\frac{x_g / \sum_{g'} x_{g'}}{\operatorname{med}_g}\Big),\quad \mathbf h_t = E_{\text{gene}}[\pi_t] + W_p[t] \]
@@ -678,7 +679,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
         <li>Chấm bài ngay trên máy, không cần tài khoản hay máy chủ.</li>
         <li>Bản dùng thử không giới hạn thời gian, mở miễn phí 7 chương của phần Sự sống và di truyền, và hiện đủ mục lục các chương còn lại.</li>
       </ul>
-      <a class="cta" id="storeLink" href="https://apps.microsoft.com/detail/9NWXL3WX0H40" target="_blank" rel="noopener">Xem trên Microsoft Store <span aria-hidden="true">↗</span></a>
+      <a class="cta" id="storeLink" href="https://apps.microsoft.com/detail/9NWXL3WX0H40?cid=bai1-embedding" target="_blank" rel="noopener">Xem trên Microsoft Store <span aria-hidden="true">↗</span></a>
     </div>
     <div class="chapters" style="min-width:0">
       <div class="small muted" style="border:0;display:block">Các chương làm nền cho bài này, kèm mục tương ứng trong bài</div>
